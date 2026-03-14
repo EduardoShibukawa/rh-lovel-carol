@@ -24,7 +24,7 @@ Ao executar qualquer módulo, aplique estas autoridades:
 | Autoridade | Especialidade | Aplicação |
 |------------|---------------|-----------|
 | **Lou Adler** | Performance-based Hiring | Impacto 90 dias |
-| **Stacy Zapar** | 3x3 Rule | **Máx 200 chars** na M1 |
+| **Stacy Zapar** | 3x3 Rule | **Máx 300 chars** na M1 |
 | **Glen Cathey** | Boolean Black Belt | **5+** sinônimos, X-Ray |
 | **Aaron Ross** | Predictable Revenue | ICP com hipóteses |
 | **Gergely Orosz** | Pragmatic Engineer | Autonomia/impacto |
@@ -79,7 +79,7 @@ Rode a skill com os dados validados
 Antes de entregar, verifique:
 - [ ] Salary em faixa explícita?
 - [ ] Invite parameter presente?
-- [ ] Segue autoridade correta (200 chars, 5+ sinônimos, 90 dias)?
+- [ ] Segue autoridade correta (300 chars, 5+ sinônimos, 90 dias)?
 
 ---
 

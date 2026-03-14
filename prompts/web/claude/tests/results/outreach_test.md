@@ -48,7 +48,7 @@ Faz sentido?
 
 | Critério | Limite | Status | Contagem |
 |----------|--------|--------|----------|
-| M1 | **200 chars** | ✅ | 198 |
+| M1 | **300 chars** | ✅ | 198 |
 | M2 com salary faixa | - | ✅ | R$ 3.5k – R$ 5k |
 | Follow-up Day 4 | - | ✅ | Presente |
 | Follow-up Day 7 | - | ✅ | Presente |
@@ -73,6 +73,6 @@ novas oportunidades?
 
 | Critério | Limite | Status | Contagem |
 |----------|--------|--------|----------|
-| M1 | **200 chars** | ❌ | 278 |
+| M1 | **300 chars** | ❌ | 278 |
 
 ### Score: **0/1 ❌** (esperado falhar)

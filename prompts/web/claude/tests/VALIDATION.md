@@ -3,7 +3,7 @@
 ## Stacy Zapar (OUTREACH)
 | Critério | Limite | Como Validar |
 |----------|--------|---------------|
-| M1 | **200 chars** | Contar caracteres |
+| M1 | **300 chars** | Contar caracteres |
 | Emoji | 1 por mensagem | Verificar contagem |
 | Follow-up | Day 4 / Day 7 | Presença |
 
@@ -65,9 +65,9 @@ Validação:
 ### Exemplo de validação (OUTREACH):
 ```
 Input: vaga_bdr.md  
-Output esperado: M1 máx 200 chars
+Output esperado: M1 máx 300 chars
 Validação:
-  - [ ] M1 ≤ 200 chars? → SIM
+  - [ ] M1 ≤ 300 chars? → SIM
   - [ ] M2 com salary faixa? → SIM
   - [ ] Follow-up Day 4/7? → SIM
   - [ ] Invite presente? → SIM

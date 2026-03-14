@@ -16,7 +16,7 @@ Cultura: Operação nova, em constante desenvolvimento e otimização de process
 
 ## Expected Output (OUTREACH)
 
-### M1 (Máx 200 chars)
+### M1 (Máx 300 chars)
 ```
 Oi [Nome]! Sou Carol, parceira da Lovel. Vi seu perfil e acredito que possa 
 lhe interessar uma oportunidade de BDR em consultoria de Curitiba. 
