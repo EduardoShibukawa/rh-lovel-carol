@@ -91,7 +91,9 @@ Diferencial: Sistema que processa milhões de transações
 
 Faz sentido?
 
-🔗 app.lovel.dev/vagas/.../?invite=caroline.lima798
+🔗 [link da vaga]
+
+💡 [Gerado com invite parameter - AVISAR Carol]
 ```
 
 ## Limitations
@@ -100,14 +102,14 @@ Faz sentido?
 - **PROIBIDO**: Usar travessões (—) ou separadores (---)
 - **PROIBIDO**: Usar mais de 1 emoji por mensagem
 - **PROIBIDO**: Frases genéricas ("Hope this finds you well", "boa tarde")
-- **SEMPRE**: Incluir faixa salarial explícita na M2
-- **SEMPRE**: Incluir link com invite=caroline.lima798
+- **SEMPRE**: Sugerir faixa salarial explícita na M2
+- **AVISAR**: Que gerou link com invite parameter
 
 ## Validation
 
 - [ ] M1 com máximo 300 caracteres?
-- [ ] M2 com todos os dados (empresa, cargo, salary, modelo, link)?
+- [ ] M2 com todos os dados (empresa, cargo, salary, modelo)?
 - [ ] Follow-ups Day 4 e Day 7?
 - [ ] Tom humano, sem formalismo?
-- [ ] Invite parameter presente?
+- [ ] AVISAR que gerou link com invite?
 - [ ] Personalização com detalhe real (ou placeholder com exemplo)?

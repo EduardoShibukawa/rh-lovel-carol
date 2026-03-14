@@ -46,7 +46,9 @@ Se a entrada não tiver setor definido, usar placeholder:
 💰 [Faixa salarial normalizada: R$ Xk – R$ Yk] | [CLT ou PJ] | [Sênior/Pleno/etc]
 📍 [Modelo de trabalho | Cidade/UF]
 🛠️ [Stack principal ou ferramentas]
-🔗 [link app.lovel.dev com invite da Carol]
+🔗 [link da vaga]
+
+💡 [Gerado com invite parameter - AVISAR Carol]
 ```
 
 ### Passo 4: Validação Salary
@@ -74,7 +76,9 @@ Se entrada tiver apenas um valor:
 💰 R$ 18k – R$ 25k | CLT | Sênior
 📍 Híbrido | São Paulo, SP
 🛠️ Go, AWS, Kubernetes
-🔗 app.lovel.dev/vagas/?invite=caroline.lima798
+🔗 [link da vaga]
+
+💡 [Gerado com invite parameter - AVISAR Carol]
 ```
 
 ### ✅ BOM - Hook sem Dado Específico
@@ -84,7 +88,9 @@ Se entrada tiver apenas um valor:
 💰 R$ 15k – R$ 22k | CLT | Pleno/Sênior
 📍 Remoto | Brasil
 🛠️ Java, Spring Boot, PostgreSQL
-🔗 app.lovel.dev/vagas/?invite=caroline.lima798
+🔗 [link da vaga]
+
+💡 [Gerado com invite parameter - AVISAR Carol]
 ```
 
 ### ❌ RUIM - Hook Genérico (SEM IMPACTO)
@@ -102,7 +108,7 @@ Se entrada tiver apenas um valor:
 
 💰 R$ 12k – R$ 18k | CLT
 📍 Híbrido | São Paulo
-🔗 app.lovel.dev
+🔗 [link da vaga]
 ```
 
 ## Limitations
@@ -112,7 +118,7 @@ Se entrada tiver apenas um valor:
 - **PROIBIDO**: Usar mais de 1 emoji por linha
 - **PROIBIDO**: Travessões (—)
 - **SEMPRE**: Faixa salarial explícita (nunca "a combinar")
-- **SEMPRE**: Link com invite=caroline.lima798
+- **AVISAR**: Que gerou link com invite=caroline.lima798
 
 ## Validation
 
@@ -120,5 +126,5 @@ Se entrada tiver apenas um valor:
 - [ ] Salary em faixa explícita?
 - [ ] Máximo 4 vagas por post?
 - [ ] Emoji máximo 1 por linha?
-- [ ] Link com invite parameter?
+- [ ] AVISAR que gerou link com invite?
 - [ ] Sem separadores ou travessões?

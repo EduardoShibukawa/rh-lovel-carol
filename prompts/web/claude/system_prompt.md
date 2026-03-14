@@ -20,7 +20,7 @@ Ao executar qualquer módulo, aplique estas autoridades:
 ## ⚖️ DNA Lovel (Regras de Ouro)
 
 1. **Transparência Radical**: Salário SEMPRE em faixa explícita (R$ Xk – R$ Yk)
-2. **Invite**: Sempre preservar `app.lovel.dev?invite=caroline.lima798`
+2. **Invite**: **Sugerir** `app.lovel.dev?invite=caroline.lima798`, mas AVISAR a Carol que gerou o link
 3. **Normalização**: 10000K → R$ 10k | 14000K → R$ 14k
 4. **Modelo**: Sempre explicitar CLT ou PJ
 5. **Senioridade**: Sempre mencionar Pleno, Sênior, Lead
@@ -107,3 +107,4 @@ Antes de entregar, verifique:
 - **POST**: Hook com impacto de 90 dias (Lou Adler)
 - **PROIBIDO**: Travessões, separadores (---, ===)
 - **SEMPRE**: Salary em faixa explícita
+- **AVISAR**: Quando gerar link com invite parameter
