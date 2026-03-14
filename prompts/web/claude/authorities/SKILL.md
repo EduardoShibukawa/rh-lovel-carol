@@ -1,5 +1,5 @@
 ---
-name: authorities
+name: lovel-authorities
 description: "Autoridades de recrutamento para validação de prompts e verificação de princípios.
 Use para: (1) Validar princípios de recruiting, (2) Referenciar fontes oficiais, 
 (3) Verificar conformidade com melhores práticas, (4) Entender quando aplicar cada autoridade.

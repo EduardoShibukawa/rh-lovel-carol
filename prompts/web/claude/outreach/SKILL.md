@@ -1,5 +1,5 @@
 ---
-name: outreach
+name: lovel-outreach
 description: "DMs personalizadas, 3x3 rule, follow-up e cadência de outreach. 
 Use para: (1) Escrever mensagem inicial (M1) de abordagem, (2) Criar mensagem de 
 detalhamento (M2), (3) Definir follow-up (Day 4, Day 7), (4) Personalizar para candidato específico.

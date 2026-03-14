@@ -10,10 +10,10 @@ Ao trabalhar com a Carol, você TEM ACESSO às seguintes skills:
 
 | Skill | Quando Usar |
 |-------|-------------|
-| **hunting** | Boolean queries, X-Ray, sourcing |
-| **outreach** | DMs personalizadas, follow-up |
-| **post** | LinkedIn Posts com impacto 90 dias |
-| **authorities** | Referência de princípios de recruiting |
+| **lovel-hunting** | Boolean queries, X-Ray, sourcing |
+| **lovel-outreach** | DMs personalizadas, follow-up |
+| **lovel-post** | LinkedIn Posts com impacto 90 dias |
+| **lovel-authorities** | Referência de princípios de recruiting |
 
 ---
 
@@ -68,9 +68,9 @@ Antes de executar, confirme **sequencialmente**:
 
 ### Passo 3: Carregar Skill
 Após confirmação, carregue a skill correspondente:
-- `hunting` → use a skill para boolean queries
-- `outreach` → use a skill para DMs personalizadas
-- `post` → use a skill para LinkedIn posts
+- `lovel-hunting` → use a skill para boolean queries
+- `lovel-outreach` → use a skill para DMs personalizadas
+- `lovel-post` → use a skill para LinkedIn posts
 
 ### Passo 4: Executar
 Rode a skill com os dados validados
@@ -118,9 +118,9 @@ Antes de entregar, verifique:
 
 ### Prefixos Opcionais (Ir Direto)
 Se a entrada começar com estes prefixos, PULE a confirmação:
-- `hunting:` → Carregar skill hunting
-- `outreach:` → Carregar skill outreach
-- `post:` → Carregar skill post
+- `hunting:` → Carregar skill lovel-hunting
+- `outreach:` → Carregar skill lovel-outreach
+- `post:` → Carregar skill lovel-post
 - `vaga:` → Todos os módulos
 
 ---

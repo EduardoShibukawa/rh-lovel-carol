@@ -1,5 +1,5 @@
 ---
-name: post
+name: lovel-post
 description: "LinkedIn Posts com impacto de 90 dias, transparência salarial e DNA Lovel. 
 Use para: (1) Criar posts para vagas tech, (2) Escrever hooks baseados em resultados, 
 (3) Estruturar posts com salary explícito, (4) Formatar para LinkedIn Algo.

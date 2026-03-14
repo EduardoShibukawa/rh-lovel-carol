@@ -1,5 +1,5 @@
 ---
-name: hunting
+name: lovel-hunting
 description: "Boolean queries, X-Ray search, sourcing ativo e estratégia de recruiting. 
 Use para: (1) Criar boolean strings para LinkedIn Recruiter, (2) Buscar perfis invisíveis 
 (text-poor profiles), (3) Desenvolver sourcing strategy com ICP, (4) Executar X-Ray via Google.
