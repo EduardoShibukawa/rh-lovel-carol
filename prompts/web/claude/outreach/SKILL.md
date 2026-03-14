@@ -14,7 +14,7 @@ Skill para criar mensagens de outreach personalizadas seguindo a 3x3 Rule de Sta
 
 ## Autoridades Aplicadas
 
-- **Stacy Zapar**: 3x3 Rule (máx 200 chars, 3 pontos personalização, follow-up 3 dias)
+- **Stacy Zapar**: 3x3 Rule (máx 300 chars, 3 pontos personalização, follow-up 3 dias)
 - **Allie Miller**: P-C-T-F (Persona, Context, Task, Format)
 - **Aaron Ross**: Closing CTA ("Faz sentido?")
 - **Lou Adler**: Impacto de 90 dias na descrição
@@ -30,7 +30,7 @@ Se não houver dados do perfil:
   - Projeto ou resultado específico
   - Stack ou área de atuação
 
-### Passo 2: Gerar M1 (Máx 200 caracteres)
+### Passo 2: Gerar M1 (Máx 300 caracteres)
 Estrutura:
 ```
 Oi [Nome]! Sou [Carol], parceira da Lovel. Vi seu perfil e acredito que possa lhe interessar 
@@ -38,7 +38,7 @@ uma oportunidade em [Empresa Setor] focada em [Impacto/Tecnologia].
 Está avaliando novas oportunidades?
 ```
 
-**Contagem: [X]/200 caracteres**
+**Contagem: [X]/300 caracteres**
 
 ### Passo 3: Gerar M2 (Após resposta)
 Estrutura:
@@ -96,7 +96,7 @@ Faz sentido?
 
 ## Limitations
 
-- **PROIBIDO**: Exceder 200 caracteres na M1
+- **PROIBIDO**: Exceder 300 caracteres na M1
 - **PROIBIDO**: Usar travessões (—) ou separadores (---)
 - **PROIBIDO**: Usar mais de 1 emoji por mensagem
 - **PROIBIDO**: Frases genéricas ("Hope this finds you well", "boa tarde")
@@ -105,7 +105,7 @@ Faz sentido?
 
 ## Validation
 
-- [ ] M1 com máximo 200 caracteres?
+- [ ] M1 com máximo 300 caracteres?
 - [ ] M2 com todos os dados (empresa, cargo, salary, modelo, link)?
 - [ ] Follow-ups Day 4 e Day 7?
 - [ ] Tom humano, sem formalismo?

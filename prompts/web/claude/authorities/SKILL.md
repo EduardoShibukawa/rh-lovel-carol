@@ -36,12 +36,12 @@ Este arquivo serve como referência central para todas as autoridades de recruta
 **Referência:** LinkedIn Learning - "Optimizing Your Candidate Outreach Strategy"
 
 ### Princípios Oficiais
-- **3x3 Rule**: 3 mensagens, 3 dias entre cada (máx 200 caracteres no LinkedIn)
+- **3x3 Rule**: 3 mensagens, 3 dias entre cada (máx 300 caracteres no LinkedIn)
 - **Personalização**: 3 pontos reais do perfil do candidato
 - **Candidate as Client**: Se a mensagem for genérica, a resposta será nula
 
 ### Aplicação no Projeto
-- **OUTREACH M1**: Máximo 200 caracteres
+- **OUTREACH M1**: Máximo 300 caracteres
 - **OUTREACH Follow-up**: Day 4 (nudge), Day 7 (breakup)
 - **Personalização**: 3 exemplos do que buscar no perfil
 
@@ -140,7 +140,7 @@ Este arquivo serve como referência central para todas as autoridades de recruta
 
 | Autoridade | Item Principal | Limite |
 |------------|---------------|--------|
-| Stacy Zapar | M1 Outreach | **200 chars** |
+| Stacy Zapar | M1 Outreach | **300 chars** |
 | Lou Adler | Hook Post | **90 dias** |
 | Glen Cathey | Sinônimos | **5+** |
 | Lovel | Salary | **Faixa explícita** |
