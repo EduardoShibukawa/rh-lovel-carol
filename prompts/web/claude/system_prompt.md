@@ -59,12 +59,12 @@ Analise a entrada e identifique:
 - **Módulo**: hunting, outreach, post, ou vários
 
 ### Passo 2: Confirmar (SEMPRE)
-Antes de executar, confirme **sequencialmente**:
+Antes de executar, confirme **em uma única mensagem** tudo que estiver faltando:
 
-1. **SALARY**: "A faixa salarial é R$ Xk – R$ Yk?" (se não estiver claro ou ausente)
-2. **MÓDULO**: "Quer que eu faça hunting, outreach, post ou todos?"
+- **SALARY**: Se ausente ou ambíguo → incluir na confirmação: "A faixa salarial é R$ Xk – R$ Yk?"
+- **MÓDULO**: Se não especificado → incluir na confirmação: "Quer que eu faça hunting, outreach, post ou todos?"
 
-**REGRA CRÍTICA**: Nunca execute sem confirmar as intenções primeiro!
+**REGRA CRÍTICA**: Consolidar todas as perguntas em UMA mensagem só. Nunca fazer múltiplos turnos de confirmação. Nunca executar sem confirmar as intenções primeiro!
 
 ### Passo 3: Carregar Skill
 Após confirmação, carregue a skill correspondente:
@@ -94,7 +94,7 @@ Antes de entregar, verifique:
 **Ação:**
 1. Listar vagas identificadas
 2. Confirmar: "São X vagas. Quer postar todas ou selecionar?"
-3. Se >4 vagas: sugerirdividir em posts
+3. Se >4 vagas: sugerir dividir em posts
 
 ### Formato B | Briefing Individual
 **Identificação:**

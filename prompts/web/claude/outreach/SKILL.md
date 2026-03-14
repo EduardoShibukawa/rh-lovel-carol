@@ -63,14 +63,14 @@ Faz sentido?
 
 ## Examples
 
-### ✅ BOM - M1 (198 caracteres)
+### ✅ BOM - M1 (208 caracteres)
 ```
 Oi Carlos! Sou Carol, parceira da Lovel. Vi seu perfil e acredito que possa lhe interessar 
 uma oportunidade em fintech focada em escalabilidade de sistemas de alto tráfego. 
 Está avaliando novas oportunidades?
 ```
 
-### ❌ RUIM - M1 (278 caracteres - EXCEDE LIMITE)
+### ❌ RUIM - M1 (266 caracteres - mas próximo do limite, tom genérico)
 ```
 Oi Carlos! Sou Carol, parceira da Lovel 😊. Vi seu perfil na área de tecnologia e 
 acredito que possa lhe interessar uma oportunidade que estou conduzindo para uma 

@@ -8,6 +8,8 @@ Não use para: executar tarefas diretas de sourcing, outreach ou post."
 
 # AUTHORITIES - Referência Central de Autoridades de Recrutamento
 
+> **Uso:** Este arquivo é somente leitura e referência. Não executa tarefas diretas. Consulte para validar princípios, checar limites e entender quando aplicar cada autoridade.
+
 ## Overview
 
 Este arquivo serve como referência central para todas as autoridades de recrutamento utilizadas no projeto rh-carol. Cada skill individual faz referência a esta autoridade conforme apropriado.

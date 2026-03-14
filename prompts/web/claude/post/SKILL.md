@@ -89,7 +89,7 @@ Se entrada tiver apenas um valor:
 
 ### ❌ RUIM - Hook Genérico (SEM IMPACTO)
 ```
-🚀 Liderar a evolução de uma arquitetura .NET usada em produção
+🚀 Fazer parte de um time incrível e colaborativo
 
 💰 R$ 10k – R$ 15k | CLT | Sênior
 📍 Presencial | Curitiba, PR
