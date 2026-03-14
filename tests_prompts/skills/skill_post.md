@@ -9,42 +9,55 @@
 ---
 
 <pre_exec>
-  1. HOOK ADLER: O título deve focar no impacto ou resultado de 90 dias. NUNCA o nome do cargo.
+  1. HOOK ADLER: O título deve focar no impacto ou resultado de 90 dias com métricas. NUNCA o nome do cargo. Exige resultado mensurável.
   2. MARR SEO: Garantir que as palavras-chave principais do cargo e stack estejam presentes de forma natural para indexação (Google Jobs/LinkedIn).
-  3. VALIDAÇÃO SALARY: Se entrada tiver valor único, APRESENTAR OPÇÕES:
+  3. SETOR: Se a entrada não tiver setor definido, adicionar [SETOR: fintech/healthtech/SaaS/etc] como nota para Carol completar.
+  4. VALIDAÇÃO SALARY: Se entrada tiver valor único, APRESENTAR OPÇÕES:
      - Opção 1: Calcular faixa automática (variação ±20%)
      - Opção 2: Você confirmar o valor
      - Opção 3: Usar como preferir
      Sempre com justificativa: "Faixa explícita performa melhor (por quê: Lovel - transparência radical)"
-  4. CONTEXTO MÍNIMO: Se a fixture/contato tiver informação de setor (fintech, healthtech, SaaS, etc), INCLUIR. Se não tiver, usar "empresa de tecnologia" como placeholder.
-  5. LIMITE POR POST: Até 4 vagas é a recomendação (por quê: LinkedIn Algo - dwell time). Se >4 vagas, APRESENTAR OPÇÕES:
+  5. CONTEXTO MÍNIMO: Se a fixture/contato tiver informação de setor (fintech, healthtech, SaaS, etc), INCLUIR. Se não tiver, usar "empresa de tecnologia" como placeholder.
+  6. LIMITE POR POST: Até 4 vagas é a recomendação (por quê: LinkedIn Algo - dwell time). Se >4 vagas, APRESENTAR OPÇÕES:
      - Opção 1: Post único com todas
      - Opção 2: Dividir em X posts
      - Opção 3: Você escolher quais postar
-  6. PROIBIDO: Usar separadores como "---", "===", "___" ou rótulos como "POST 1", "VAGA 1".
-  7. ESPAÇAMENTO: Use apenas 2 quebras de linha entre uma vaga e outra.
-  8. DNA LOVEL: O link app.lovel.dev...invite=caroline.lima798 é o único CTA.
-  9. TRANSPARÊNCIA: Salary SEMPRE em faixa explícita. Nunca "a combinar".
+  7. PROIBIDO: Usar separadores como "---", "===", "___" ou rótulos como "POST 1", "VAGA 1".
+  8. ESPAÇAMENTO: Use apenas 2 quebras de linha entre uma vaga e outra.
+  9. DNA LOVEL: O link app.lovel.dev...invite=caroline.lima798 é o único CTA.
+  10. TRANSPARÊNCIA: Salary SEMPRE em faixa explícita. Nunca "a combinar".
+  11. VARIAÇÃO DE HOOKS: Cada vaga deve ter um HOOK DIFERENTE. Exemplos de variação:
+     - "Tornar API 3x mais rápida em 90 dias"
+     - "Escalar de 10k para 100k usuários"
+     - "Reduzir downtime de 5% para 0.1%"
+     Não use sempre "🚀 [verbo] [substantivo]" - misture padrões.
 </pre_exec>
 
 <exemplos_hook>
+  COM DADO DE IMPACTO (usar exatamente):
   RUIM: "Liderar a evolução de uma arquitetura .NET usada em produção"
-  BOM: "Tornar a API 3x mais rápida em 90 dias"
+  BOM: "Tornar a API 3x mais rápida em 90 dias" (só usar se a vaga tiver esse dado)
   
   RUIM: "Construir e evoluir aplicações fullstack em .NET"
-  BOM: "Criar a próxima versão do produto que será usada por 50k usuários"
+  BOM: "Criar a próxima versão do produto que será usada por 50k usuários" (usar dado da vaga)
   
-  RUIM: "Escalar uma plataforma de software e resolver desafios de arquitetura"
-  BOM: "Resolver desafios de performance que estão causando churn de clientes"
-  
-  RUIM: "Liderar decisões técnicas e orientar um time de engenharia"
-  BOM: "Crescer como líder técnico construindo um time de 5 para 15 engenheiros"
-  
-  RUIM: "Estruturar e liderar a área de tecnologia"
-  BOM: "Construir a área de TI do zero em empresa em crescimento 3x ao ano"
+  SEM DADO DE IMPACTO (usar contextualização genérica):
+  RUIM: "Escalar uma plataforma de software e resolver desafios de arquitetura" (vago)
+  BOM: "Trabalhar em sistemas de alto tráfego que processam milhões de transações"
   
   RUIM: "Melhorar a qualidade das entregas"
-  BOM: "Reduzir bugs em produção em 80% nos primeiros 90 dias"
+  BOM: "Estruturar área de QA em plataforma utilizada por milhares de usuários"
+  
+  RUIM: "Liderar decisões técnicas e orientar um time de engenharia"
+  BOM: "Conduzir decisões técnicas em equipe de [X] engenheiros"
+
+  REGRAS OBRIGATÓRIAS:
+  1. O hook deve conter um RESULTADO MENSURÁVEL, mas NUNCA inventar dados.
+  2. Se a vaga tem dados de impacto (ex: "sistema que sustenta 50k usuários"), USAR esses dados.
+  3. Se NÃO tem dados, usar contextualização genérica técnica como: "sistemas de alto tráfego", "infraestrutura crítica", "plataforma em crescimento".
+  4. NUNCA inventar "3x mais rápido", "80% menos bugs" - isso é hallucinação.
+  5. Se precisar de dado específico, ADICIONAR [?]: "Tornar API [? mais rápida] em 90 dias"
+  6. VARIE o padrão de cada hook - não use sempre "🚀 [verbo] [substantivo]"
 </exemplos_hook>
 
 <estrutura>

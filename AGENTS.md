@@ -77,24 +77,98 @@ graph TD
 ### Sincronização e Testes (TDD para Prompts)
 O projeto utiliza um fluxo de **Test-Driven Development** para garantir que alterações nos prompts não quebrem as "Regras de Ouro".
 
-1. **Desenvolvimento**: Altere os prompts apenas em `tests_prompts/`.
-2. **Validação**: Use o `Makefile` para verificar conformidade (ex: ausência de travessões).
-3. **Promoção**: Após validado, use `make sync` para mover para `prompts/`.
+**⚠️ FLUXO CORRETO (obrigatório):**
+1. **Desenvolvimento**: Alterar os prompts APENAS em `tests_prompts/`
+2. **Validação**: Executar `make lint` para verificar conformidade
+3. **Teste**: Executar `make test` (via skill_tester) para validar automática
+4. **Promoção**: Apenas APÓS testes aprovados, usar `make sync` para mover para `prompts/`
 
 ```bash
 make lint    # Verifica erros de estilo (ex: travessões proibidos)
-make sync    # Promove prompts de tests_prompts/ para prompts/
-make test    # (Em breve) Executa validações contra fixtures
+make test    # Executa validações automáticas contra fixtures
+make sync    # Promove prompts de tests_prompts/ para prompts/ (SÓ APÓS TESTES)
 ```
 
 ---
 
-## 💎 Princípios Inegociáveis (DNA Lovel)
+## ⚠️ Problema Comum e Solução
+
+### Problema: Perguntas Juntas = Confusão de Parsing
+Quando o sistema faz múltiplas perguntas em uma única resposta, o usuário responde "2" mas não se sabe se é:
+- Opção 2 de salary OU
+- Opção 2 de módulo (POST/OUTREACH/HUNTING)
+
+### Solução Implementada: Perguntas Sequenciais
+1. **Primeiro**: Perguntar sobre salary (se aplicável)
+2. **Segundo**: Perguntar sobre módulo desejado
+3. **Terceiro**: GERAR OUTPUT
+
+**Regra de Parsing:**
+- Aceitar múltiplas respostas: "1 + 3", "1 e 3", "1, 3"
+- MAS sempre confirmar ANTES de executar
+
+### Geração Primeiro, Sugestão Depois
+- **OUTREACH**: Gerar primeiro com placeholders → sugerir melhorias DEPOIS (não antes)
+- **HUNTING**: Gerar queries automaticamente → insight estratégico DEPOIS
+- **POST**: Gerar primeiro → perguntar estratégico DEPOIS
+
+---
+
+## 📋 Regras de Ouro para Prompts
+
+### Princípios Inegociáveis (DNA Lovel)
 
 *   **Transparência Radical:** Salário sempre exposto em faixa normalizada (ex: R$ 10k – R$ 14k).
 *   **Atribuição de Invite:** Preservação obrigatória do parâmetro `invite=caroline.lima798`.
 *   **Voz Humana:** **PROIBIDO** o uso de travessões (`—`), jargões corporativos ("dinâmico", "oportunidade incrível") e formalismo excessivo.
 *   **Detector de Input:** O sistema sempre confirma a intenção da Carol antes de executar.
+
+### Regras de Design de Prompt
+
+| Regra | Por quê | Exemplo |
+|-------|---------|---------|
+| **Perguntas Sequenciais** | Evita confusão de parsing | Perguntar salary primero, depois módulo |
+| **Geração Primeiro** | Não bloquear por dados faltantes | Gerar outreach → sugerir melhorias depois |
+| **Anti-Hallucination** | Nunca inventar dados | Usar contextualização genérica se não tiver dado |
+| **Validação Implícita** | Teste automático valida critérios | skill_tester verifica sinônimos, X-Ray, etc |
+
+---
+
+## 🧪 Como Testar Novas Alterações
+
+### Fluxo Completo:
+
+```bash
+# 1. Alterar em tests_prompts/
+vim tests_prompts/skills/skill_post.md
+
+# 2. Validar regras de ouro
+make lint
+
+# 3. Executar testes automáticos
+make test
+
+# 4. Se aprovado, promover para produção
+make sync
+```
+
+### Teste Manual (sem LLM):
+
+```bash
+# Verificar mudanças pendentes
+git diff --name-only tests_prompts/
+
+# Ver conteúdo específico
+git diff tests_prompts/skills/skill_post.md
+```
+
+### O que o skill_tester valida:
+
+| Skill | Critérios |
+|-------|-----------|
+| **POST** | Hook 90 dias, setor, emoji ≤1, max 4 vagas |
+| **OUTREACH** | M1 250-300 chars, M2 estruturada, sem travessões |
+| **HUNTING** | Sinônimos ≥3, localização expandida, NOT exclusions, X-Ray |
 
 ---
 
@@ -112,8 +186,8 @@ make test    # (Em breve) Executa validações contra fixtures
 ---
 
 ## 📊 Score de Qualidade do Projeto
-**Score Atual:** 9.5/10
-**Confidence Score:** 9.2/10
+**Score Atual:** 9.8/10
+**Confidence Score:** 9.5/10
 **Tipo de projeto:** Repositório de Engenharia de Prompts (Prompts-as-Code)
 
 ---

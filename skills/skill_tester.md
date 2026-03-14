@@ -11,65 +11,95 @@ Executar testes automatizados nos prompts de tests_prompts/ para validar qualida
 ---
 
 <fluxo>
-  1. CARREGAR prompts de tests_prompts/ (não os originais)
-  2. IDENTIFICAR qual skill/module está sendo testado (POST/OUTREACH/HUNTING)
+  1. DETECTAR mudanças: Usar git diff para identificar quais arquivos foram alterados em tests_prompts/
+  2. IDENTIFICAR qual skill foi modificado (POST/OUTREACH/HUNTING/system_prompt)
   3. SELECIONAR fixture de teste apropriado em tests/fixtures/
   4. EXECUTAR o prompt com a fixture (via subagent em contexto limpo)
-  5. COMPARAR output com resultado esperado em tests/results/
-  6. GERAR relatório de diff: melhorou / piorou / inalterado
+  5. VALIDAR AUTOMATICAMENTE os critérios abaixo
+  6. GERAR relatório com links de teste
   7. SE aprovado, COPIAR para prompts/ (só após validação)
 </fluxo>
+
+<detectar_mudancas>
+  Antes de testar, execute:
+  git diff --name-only tests_prompts/
+  
+  Mapeamento automático:
+  - skill_post.md → testar com fixture_1_vagas_tech
+  - skill_outreach.md → testar com fixture_2_vaga_bdr
+  - skill_hunting.md → testar com fixture_2_vaga_bdr
+  - system_prompt.md → testar todos os skills
+  - authorities.md → validar referências nos skills
+  
+  Se nenhuma mudança detectada: "Nenhuma mudança para testar"
+</detectar_mudancas>
 
 <test_runner>
   Ao executar o teste, você DEVE:
   - Usar subagent para executar em contexto limpo (sem viés de conversa anterior)
   - Usar as fixtures existentes: tests/fixtures/*.md
-  - Comparar com os resultados esperados: tests/results/*.md
+  - Executar o prompt completo e capturar o output
+  - VALIDAR TODOS OS CRITÉRIOS automaticamente (veja abaixo)
   - Reportar métricas: precisão, tom, completude, compliance
+  - GERAR LINKS DE TESTE para X-Ray queries
 </test_runner>
 
-<validacao_criteria>
-  Para cada teste, avaliar:
-  
+<validacao_automatica>
+  **Para TODOS os skills:**
   ✓ FORMATO: Estrutura esperada seguida?
   ✓ TOM: Tom humano, sem formalismo?
   ✓ TRANSPARÊNCIA: Salary em faixa explícita?
   ✓ AUTORIDADES: Referências corretas aplicadas?
   ✓ LINK: Invite parameter presente?
-  
-  Cada critério = 1 ponto. Score mínimo: 4/5 para aprovação.
-</validacao_criteria>
+  ✓ PROIBIDO: Travessões (—), separadores (---, ===)
+
+  **Para HUNTING (validação implícita):**
+  ✓ SINÔNIMOS: Tem pelo menos 3 sinônimos do cargo?
+  ✓ LOCALIZAÇÃO: Tem expansão (cidade + estado + região)?
+  ✓ EXCLUSÕES: Tem NOT para excluir júnior/estagiário?
+  ✓ X-RAY: Tem query site:linkedin.com?
+  ✓ ESTRUTURA: Tem 3-4 variações (Volume, Método, Alternative)?
+  → Se X-RAY encontrada: GERAR LINK GOOGLE automaticamente
+
+  **Para POST (validação implícita):**
+  ✓ HOOK: Foco em impacto de 90 dias (Lou Adler)?
+  ✓ CONTEXTO: Setor ou contexto incluso?
+  ✓ EMOJI: Máximo 1 por linha?
+  ✓ LIMITE: Máximo 4 vagas por post?
+
+  **Para OUTREACH (validação implícita):**
+  ✓ M1: Entre 250-300 caracteres?
+  ✓ PERSONALIZAÇÃO: Tem placeholder ou detalhe real?
+  ✓ FOLLOWUP: Tem M2 estruturada?
+</validacao_automatica>
 
 <diff_report>
   O relatório DEVE incluir:
   - Fixture usada
-  - Resultado anterior vs atual
-  - Score (X/5)
+  - Skill testado
+  - Score (X/Y critérios)
   - Status: APROVADO / REPROVADO / APROVADO COM RESSALVAS
-  - Se reprovado: lista de problemas específicos
+  - Problemas específicos (se houver)
+  - Links de teste (se aplicável)
   - Recomendação: aplicar ao projeto ou revisar
-</diff_report>
 
-<exemplo_test>
-  TESTE: skill_post.md com fixture exemplo_1_vagas_tech
+  **Formato do relatório:**
+  ```
+  📊 TESTE AUTOMÁTICO - [SKILL]
+  Fixture: [nome]
+  Score: [X/Y]
+  Status: [APROVADO/REPROVADO]
   
-  Executando em contexto limpo...
+  🔗 Links para testar:
+  • [link Google]
   
-  📊 RESULTADO:
-  - Formato: ✓ Segue estrutura
-  - Tom: ✓ Humano, direto
-  - Transparência: ✓ Faixa salarial explícita
-  - Autoridades: ✓ Lou Adler hook aplicado
-  - Link: ✓ Com invite parameter
-  
-  Score: 5/5 - APROVADO
-  
-  💡 Recomendação: Pode aplicar ao projeto original.
-</exemplo_test>
+  💡 Recomendação: [sim/não]
+  ```
+</diff_report>
 
 <confidence>
   Score: 9/10
-  Reasoning: Segue metodologia Test-Prompt (isolated subagents), usa fixtures existentes, compara com results esperados, gera diff report. Baseado em Maxim AI e Evaligo best practices.
+  Reasoning: Validação implícita para todos os skills (HUNTING, POST, OUTREACH). Gera links de teste automaticamente. Segue metodologia Test-Prompt com subagents.
   References: Test-Prompt (MCP Market), Maxim AI, Evaligo
 </confidence>
 
