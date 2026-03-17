@@ -10,6 +10,26 @@
       "id": 2,
       "prompt": "Parecer para Jason Pires, Tech Lead com 15 anos, ex-B3 e Safra",
       "expected_output": "Perfil sênior, experiência financeira, pontos de atenção sobre disponibilidade, offer versão curta"
+    },
+    {
+      "id": 3,
+      "prompt": "Parecer para candidato júnior com 1 ano de experiência",
+      "expected_output": "Transparente sobre senioridade, pontos de atenção realistas"
+    },
+    {
+      "id": 4,
+      "prompt": "Parecer com dados limitados (apenas nome e cargo)",
+      "expected_output": "Pede mais informações ou indica dados insuficientes"
+    },
+    {
+      "id": 5,
+      "prompt": "Parecer para DevOps Engineer com AWS e Kubernetes",
+      "expected_output": "Stack categorizada, pontos fortes técnicos, recomendação clara"
+    },
+    {
+      "id": 6,
+      "prompt": "Parecer para candidato em transição de carreira (não-tech para tech)",
+      "expected_output": "Pontos de atenção sobre gaps, experiência prévia relevante"
     }
   ]
 }

@@ -13,8 +13,23 @@
     },
     {
       "id": 3,
-      "prompt": "Follow-up Day 4 para candidate que não respondeu",
+      "prompt": "Follow-up Day 4 para candidato que não respondeu",
       "expected_output": "Mensagem amigável, Day 4 correto, 1 emoji"
+    },
+    {
+      "id": 4,
+      "prompt": "M1 para Tech Lead .NET, salary 20k-30k, CLT",
+      "expected_output": "M1 < 300 chars, menciona tecnologia, tom humano"
+    },
+    {
+      "id": 5,
+      "prompt": "M1 com dados limitados: apenas nome e empresa atual",
+      "expected_output": "Usa placeholders [DETALHE REAL], pede mais contexto"
+    },
+    {
+      "id": 6,
+      "prompt": "Follow-up Day 7 (breakup) para candidato que recusou",
+      "expected_output": "Mensagem amigável, oferece manter contato futuro, 1 emoji"
     }
   ]
 }

@@ -15,6 +15,21 @@
       "id": 3,
       "prompt": "QA Engineer com Playwright, remoto Brasil",
       "expected_output": "Boolean com sinônimos para QA, ferramentas de automação, X-Ray"
+    },
+    {
+      "id": 4,
+      "prompt": "Tech Lead .NET sem localização",
+      "expected_output": "Boolean com expansão de localização (Brasil), 5+ sinônimos, exclusões"
+    },
+    {
+      "id": 5,
+      "prompt": "Data Scientist com Python e Machine Learning, remoto",
+      "expected_output": "Boolean com sinônimos para ML, Data Science, X-Ray, exclusões júnior"
+    },
+    {
+      "id": 6,
+      "prompt": "Estagiário de TI",
+      "expected_output": "Boolean INVERTENDO exclusões (procurando júnior), localização"
     }
   ]
 }

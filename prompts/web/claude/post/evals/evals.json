@@ -15,6 +15,26 @@
       "id": 3,
       "prompt": "Vaga com salary único 10k",
       "expected_output": "Salary convertido para faixa (8k-12k), nunca 'a combinar'"
+    },
+    {
+      "id": 4,
+      "prompt": "6 vagas tech (maior que 4)",
+      "expected_output": "Sugere dividir em múltiplos posts (máx 4 por post)"
+    },
+    {
+      "id": 5,
+      "prompt": "Vaga sem dado de impacto",
+      "expected_output": "Hook genérico técnico (ex: sistemas de alto tráfego)"
+    },
+    {
+      "id": 6,
+      "prompt": "Vaga com salary 'a combinar'",
+      "expected_output": "Recusa ou pergunta salary, não gera post com 'a combinar'"
+    },
+    {
+      "id": 7,
+      "prompt": "Vaga 100% Remoto",
+      "expected_output": "Modelo: Remoto | Brasil, sem indicar cidade"
     }
   ]
 }
