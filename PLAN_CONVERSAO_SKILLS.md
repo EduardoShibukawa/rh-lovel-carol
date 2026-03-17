@@ -261,6 +261,20 @@ Cada plataforma tem seu formato nativo e ambas as versões serão mantidas em pr
 
 ---
 
+## 📦 ESTRUTURA FINAL - CLAUDE.AI WEB
+
+```
+prompts/web/claude/
+├── hunting/SKILL.md           # Boolean queries
+├── outreach/SKILL.md           # DMs personalizadas
+├── post/SKILL.md               # LinkedIn Posts
+├── parecer/SKILL.md            # Parecer de hunting
+├── tester/SKILL.md            # Evals e validação ⭐ NOVO
+├── authorities/SKILL.md        # Referência central
+├── system_prompt.md            # System prompt
+└── evals_README.md             # Documentação de evals
+```
+
 ## 🔗 REFERÊNCIAS OFICIAIS
 
 ### Recrutamento
