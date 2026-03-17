@@ -13,24 +13,56 @@ Transformar a atividade de hunting (busca, atração e abordagem) em um processo
 
 ```
 rh-carol/
-├── Makefile                     # Automação de testes e sincronização
+├── Makefile                     # Automação de testes
 ├── AGENTS.md                    # Este arquivo
-├── prompts/                     # Prompts ORIGINAIS (PRODUÇÃO)
-│   ├── authorities.md           # 6 autoridades de recrutamento validadas
-│   ├── system_prompt.md         # Identidade + Roteador + DNA Lovel
-│   └── skills/
-│       ├── skill_post.md        # Lou Adler + Lovel
-│       ├── skill_outreach.md    # Stacy Zapar + Lovel
-│       └── skill_hunting.md     # Glen Cathey + Aaron Ross + Gergely Orosz + Lovel
-├── tests_prompts/               # Cópia para teste (DESENVOLVIMENTO)
-│   ├── authorities.md
-│   ├── system_prompt.md
-│   └── skills/
-├── tests/
-│   ├── fixtures/                # Entradas de exemplo para validação
-│   └── results/                 # Resultados esperados (Golden Sets)
-└── skills/
-    └── skill_tester.md          # Skill de testes automatizados
+├── tester.md                    # Skill de testes automatizados (raiz)
+├── scripts/                     # Scripts de automação
+│   ├── quick_validate.py        # Validação rápida
+│   ├── run_eval.py             # Executar evals
+│   └── improve_description.py  # Otimizar descriptions
+├── prompts/                     # Prompts por plataforma
+│   ├── web/
+│   │   ├── chatgpt/           # ChatGPT (XML)
+│   │   │   ├── authorities.md
+│   │   │   ├── system_prompt.md
+│   │   │   └── skills/
+│   │   │       ├── skill_hunting.md
+│   │   │       ├── skill_outreach.md
+│   │   │       ├── skill_post.md
+│   │   │       └── skill_parecer.md
+│   │   │
+│   │   └── claude/            # Claude.ai Web (YAML)
+│   │       ├── hunting/        # + evals/
+│   │       ├── outreach/       # + evals/
+│   │       ├── post/          # + evals/
+│   │       ├── parecer/       # + evals/
+│   │       ├── skill/         # Gestão de skills
+│   │       └── authorities/
+```
+
+---
+
+## 🧪 Tester e Scripts
+
+### tester.md (Raiz)
+Skill de testes localizada na **raiz do projeto** - usada para validar e testar as skills do projeto.
+
+### scripts/
+Scripts Python para automação:
+- `quick_validate.py` - Valida estrutura de todas as skills
+- `run_eval.py` - Executa evals de uma skill
+- `improve_description.py` - Analisa e sugere melhorias
+
+### Como usar:
+```bash
+# Validar todas as skills
+python scripts/quick_validate.py
+
+# Executar evals de uma skill
+python scripts/run_eval.py prompts/web/claude/hunting
+
+# Analisar melhorias
+python scripts/improve_description.py prompts/web/claude/hunting
 ```
 
 ---
