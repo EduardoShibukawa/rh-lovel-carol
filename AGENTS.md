@@ -1,226 +1,197 @@
-# 🧠 AGENTS.md — Ecossistema de Hunting Lovel (Carol Lima)
+# AGENTS.md - Lovel Tech Recruiting Prompt System
 
-Este documento descreve a arquitetura, as autoridades e os princípios fundamentais do sistema de prompts projetado para escalar a operação de Tech Recruiting da Carol Lima na Lovel.
-
----
-
-## 🚀 Objetivo do Projeto
-Transformar a atividade de hunting (busca, atração e abordagem) em um processo de alta performance, unindo o **DNA da Lovel** (Transparência/DX), a **Essência da Carol** (Humanidade/Diretividade) e a ciência das **Autoridades Mundiais** de recrutamento.
+This repository contains prompt engineering for a tech recruiting operation (Lovel/Carol Lima). It manages hunting, outreach, and posting prompts for multiple LLM platforms.
 
 ---
 
-## 📁 Estrutura de Arquivos
+## 📁 Project Structure
 
 ```
 rh-carol/
-├── Makefile                     # Automação de testes
-├── AGENTS.md                    # Este arquivo
-├── tester.md                    # Skill de testes automatizados (raiz)
-├── scripts/                     # Scripts de automação
-│   ├── quick_validate.py        # Validação rápida
-│   ├── run_eval.py             # Executar evals
-│   └── improve_description.py  # Otimizar descriptions
-├── prompts/                     # Prompts por plataforma
-│   ├── web/
-│   │   ├── chatgpt/           # ChatGPT (XML)
-│   │   │   ├── authorities.md
-│   │   │   ├── system_prompt.md
-│   │   │   └── skills/
-│   │   │       ├── skill_hunting.md
-│   │   │       ├── skill_outreach.md
-│   │   │       ├── skill_post.md
-│   │   │       └── skill_parecer.md
-│   │   │
-│   │   └── claude/            # Claude.ai Web (YAML)
-│   │       ├── hunting/        # + evals/
-│   │       ├── outreach/       # + evals/
-│   │       ├── post/          # + evals/
-│   │       ├── parecer/       # + evals/
-│   │       ├── skill/         # Gestão de skills
-│   │       └── authorities/
+├── AGENTS.md                           # This file
+├── prompts/
+│   └── web/
+│       ├── claude/                     # Claude.ai skills (YAML format)
+│       │   ├── hunting/SKILL.md        # Boolean query generation
+│       │   ├── outreach/SKILL.md       # DM personalization
+│       │   ├── post/SKILL.md           # LinkedIn posts
+│       │   ├── parecer/SKILL.md        # Candidate evaluation
+│       │   ├── authorities/            # Reference principles
+│       │   ├── system_prompt.md        # Main router
+│       │   └── tests/                  # Manual test fixtures
+│       └── chatgpt/                    # ChatGPT skills (XML format)
+│           ├── skills/
+│           └── evals/
+└── skills/
+    └── lovel-tester/                   # Testing infrastructure
+        └── scripts/                    # Automation scripts
 ```
 
 ---
 
-## 🧪 Tester e Scripts
+## 🛠️ Commands
 
-### tester.md (Raiz)
-Skill de testes localizada na **raiz do projeto** - usada para validar e testar as skills do projeto.
+### Validation Scripts (Python)
 
-### scripts/
-Scripts Python para automação:
-- `quick_validate.py` - Valida estrutura de todas as skills
-- `run_eval.py` - Executa evals de uma skill
-- `improve_description.py` - Analisa e sugere melhorias
-
-### Como usar:
-```bash
-# Validar todas as skills
-python scripts/quick_validate.py
-
-# Executar evals de uma skill
-python scripts/run_eval.py prompts/web/claude/hunting
-
-# Analisar melhorias
-python scripts/improve_description.py prompts/web/claude/hunting
-```
-
----
-
-## 📊 Arquitetura Visual (Fluxo de Decisão)
-
-```mermaid
-graph TD
-    A[Carol cola Vaga/Briefing] --> B[system_prompt.md]
-    
-    subgraph "Detector & Router"
-    B -->|Detecta Formato| C[Multi-vaga Lovel]
-    B -->|Detecta Formato| D[Briefing Individual]
-    B -->|Detecta Formato| E[Entrada Ambígua]
-    end
-
-    C & D --> F[Pergunta de Confirmação]
-    E --> G[Pede mais detalhes]
-    
-    F -->|Comando: Hunting| H[skill_hunting.md]
-    F -->|Comando: Post| I[skill_post.md]
-    F -->|Comando: Outreach| J[skill_outreach.md]
-    
-    subgraph "Módulos de Inteligência"
-    H --> H1[Queries Booleanas validadas]
-    I --> I1[LinkedIn Post - Impacto 90 dias]
-    J --> J1[DM Personalizada 3x3]
-    end
-    
-    H1 & I1 & J1 --> K[authorities.md - Validação]
-    K --> L[PROTOCOLO MENTOR]
-    
-    L --> M[Pergunta Estratégica]
-    L --> N[Próximo Passo / Nudge]
-    L --> O[Por quê? - Autoridades]
-    
-    M & N & P --> Q[Execução de Alta Performance]
-```
-
----
-
-## 🛠️ Fluxo de Trabalho e Sourcing (OODA Loop)
-
-### Sincronização e Testes (TDD para Prompts)
-O projeto utiliza um fluxo de **Test-Driven Development** para garantir que alterações nos prompts não quebrem as "Regras de Ouro".
-
-**⚠️ FLUXO CORRETO (obrigatório):**
-1. **Desenvolvimento**: Alterar os prompts APENAS em `tests_prompts/`
-2. **Validação**: Executar `make lint` para verificar conformidade
-3. **Teste**: Executar `make test` (via skill_tester) para validar automática
-4. **Promoção**: Apenas APÓS testes aprovados, usar `make sync` para mover para `prompts/`
+All scripts are in `skills/lovel-tester/scripts/`:
 
 ```bash
-make lint    # Verifica erros de estilo (ex: travessões proibidos)
-make test    # Executa validações automáticas contra fixtures
-make sync    # Promove prompts de tests_prompts/ para prompts/ (SÓ APÓS TESTES)
+# Validate all skills structure
+python skills/lovel-tester/scripts/quick_validate.py
+
+# Validate specific skill
+python skills/lovel-tester/scripts/quick_validate.py hunting
+
+# Validate specific platform
+python skills/lovel-tester/scripts/quick_validate.py claude
+
+# Run evals for a skill
+python skills/lovel-tester/scripts/run_eval.py hunting
+python skills/lovel-tester/scripts/run_eval.py claude/hunting
+
+# Analyze and suggest improvements for a skill
+python skills/lovel-tester/scripts/improve_description.py hunting
 ```
 
----
-
-## ⚠️ Problema Comum e Solução
-
-### Problema: Perguntas Juntas = Confusão de Parsing
-Quando o sistema faz múltiplas perguntas em uma única resposta, o usuário responde "2" mas não se sabe se é:
-- Opção 2 de salary OU
-- Opção 2 de módulo (POST/OUTREACH/HUNTING)
-
-### Solução Implementada: Perguntas Sequenciais
-1. **Primeiro**: Perguntar sobre salary (se aplicável)
-2. **Segundo**: Perguntar sobre módulo desejado
-3. **Terceiro**: GERAR OUTPUT
-
-**Regra de Parsing:**
-- Aceitar múltiplas respostas: "1 + 3", "1 e 3", "1, 3"
-- MAS sempre confirmar ANTES de executar
-
-### Geração Primeiro, Sugestão Depois
-- **OUTREACH**: Gerar primeiro com placeholders → sugerir melhorias DEPOIS (não antes)
-- **HUNTING**: Gerar queries automaticamente → insight estratégico DEPOIS
-- **POST**: Gerar primeiro → perguntar estratégico DEPOIS
-
----
-
-## 📋 Regras de Ouro para Prompts
-
-### Princípios Inegociáveis (DNA Lovel)
-
-*   **Transparência Radical:** Salário sempre exposto em faixa normalizada (ex: R$ 10k – R$ 14k).
-*   **Atribuição de Invite:** Preservação obrigatória do parâmetro `invite=caroline.lima798`.
-*   **Voz Humana:** **PROIBIDO** o uso de travessões (`—`), jargões corporativos ("dinâmico", "oportunidade incrível") e formalismo excessivo.
-*   **Detector de Input:** O sistema sempre confirma a intenção da Carol antes de executar.
-
-### Regras de Design de Prompt
-
-| Regra | Por quê | Exemplo |
-|-------|---------|---------|
-| **Perguntas Sequenciais** | Evita confusão de parsing | Perguntar salary primero, depois módulo |
-| **Geração Primeiro** | Não bloquear por dados faltantes | Gerar outreach → sugerir melhorias depois |
-| **Anti-Hallucination** | Nunca inventar dados | Usar contextualização genérica se não tiver dado |
-| **Validação Implícita** | Teste automático valida critérios | skill_tester verifica sinônimos, X-Ray, etc |
-
----
-
-## 🧪 Como Testar Novas Alterações
-
-### Fluxo Completo:
+### Manual Test Runner (Bash)
 
 ```bash
-# 1. Alterar em tests_prompts/
-vim tests_prompts/skills/skill_post.md
+# From prompts/web/claude directory
+cd prompts/web/claude
 
-# 2. Validar regras de ouro
-make lint
+# Run test with fixture
+./tests/test_runner.sh hunting vagas_tech
+./tests/test_runner.sh outreach vaga_go
+./tests/test_runner.sh post vaga_bdr
 
-# 3. Executar testes automáticos
-make test
-
-# 4. Se aprovado, promover para produção
-make sync
+# List available fixtures
+ls tests/fixtures/
 ```
 
-### Teste Manual (sem LLM):
+---
 
-```bash
-# Verificar mudanças pendentes
-git diff --name-only tests_prompts/
+## 📋 Code Style Guidelines
 
-# Ver conteúdo específico
-git diff tests_prompts/skills/skill_post.md
+### Python Scripts
+
+**Imports**
+```python
+import json
+import sys
+import re
+from pathlib import Path
 ```
 
-### O que o skill_tester valida:
+**Type Hints**
+```python
+def validate_skill_structure(skill_path: Path) -> dict:
+    """Docstring describing function."""
+```
 
-| Skill | Critérios |
-|-------|-----------|
-| **POST** | Hook 90 dias, setor, emoji ≤1, max 4 vagas |
-| **OUTREACH** | M1 250-300 chars, M2 estruturada, sem travessões |
-| **HUNTING** | Sinônimos ≥3, localização expandida, NOT exclusions, X-Ray |
+**Naming**
+- snake_case for functions/variables: `validate_skill_structure`
+- PascalCase for classes (if any)
+- Constants: UPPER_SNAKE_CASE
+
+**Error Handling**
+- Return dict with `{"valid": bool, "errors": [], "warnings": []}`
+- Use sys.exit(1) only for fatal CLI errors
+- Print emojis for status: ✅ ❌ ⚠️ 📋
+
+### Markdown Prompts (YAML/Claude format)
+
+**Required Frontmatter**
+```yaml
+---
+name: lovel-hunting
+description: "A short description for triggering (50+ chars)"
+Use para: Contexts where this skill applies
+Não use para: What to avoid
+---
+```
+
+**Content Rules**
+- NO em-dashes (`—`) - use regular hyphens or en-dashes for ranges
+- NO corporate jargon ("dinâmico", "oportunidade incrível")
+- Salary always as range with en-dash: "R$ 10k – R$ 14k"
+- Keep paragraphs short (3-4 lines max)
+- Use numbered lists for steps
+- Include "## Examples" section
+
+### Markdown Prompts (XML/ChatGPT format)
+
+```xml
+<skill>
+<name>skill_hunting</name>
+<description>Description here</description>
+<instructions>
+1. Step one
+2. Step two
+</instructions>
+<examples>
+### ✅ BOM
+Input: ...
+Output: ...
+
+### ❌ RUIM
+Input: ...
+Output: ...
+</examples>
+</skill>
+```
 
 ---
 
-## 📚 Autoridades de Referência
+## 🧪 Test Criteria by Skill
 
-| Autoridade | Princípio | Aplicação |
-|------------|-----------|-----------|
-| **Lou Adler** | Performance-based Hiring | Títulos baseados em impacto de 90 dias |
-| **Stacy Zapar** | 3x3 Rule | Outreach personalizado e cadência |
-| **Glen Cathey** | Boolean Black Belt | Queries de sourcing avançadas |
-| **Aaron Ross** | Predictable Revenue | ICP e prospecção outbound |
-| **Gergely Orosz** | Pragmatic Engineer | Mindset e linguagem para talentos tech |
-| **Lovel** | DNA & Speed | SLA 10 dias, Transparência, IA Copilot |
+### Hunting (Boolean Queries)
+- 5+ synonyms per tech term
+- X-Ray search (site:linkedin.com/in)
+- NOT exclusions for junior/intern
+- Location specificity
+
+### Outreach (DM Templates)
+- M1 max 200 characters
+- M2 with explicit salary range
+- Follow-up: Day 4 / Day 7
+- Invite parameter: `invite=caroline.lima798`
+
+### Post (LinkedIn)
+- Hook with 90-day impact (not job title)
+- Explicit salary range
+- Max 4 jobs per post
+- No separators/em-dashes
 
 ---
 
-## 📊 Score de Qualidade do Projeto
-**Score Atual:** 9.8/10
-**Confidence Score:** 9.5/10
-**Tipo de projeto:** Repositório de Engenharia de Prompts (Prompts-as-Code)
+## 🔄 Development Workflow
+
+1. **Edit prompts directly** in `prompts/web/claude/` or `prompts/web/chatgpt/`
+2. **Validate structure**: `python skills/lovel-tester/scripts/quick_validate.py`
+3. **Test manually**: Use test_runner.sh with fixtures
+4. **Improve descriptions**: Run improve_description.py
 
 ---
-**Última atualização:** 2026-03-14
+
+## 📚 Authorities & References
+
+| Authority | Principle |
+|-----------|-----------|
+| Lou Adler | Performance-based Hiring |
+| Stacy Zapar | 3x3 Rule |
+| Glen Cathey | Boolean Black Belt |
+| Aaron Ross | Predictable Revenue |
+| Gergely Orosz | Pragmatic Engineer |
+
+---
+
+## 📊 Project Metrics
+
+- **Type**: Prompt Engineering Repository
+- **Skills**: 8 (4 Claude + 4 ChatGPT)
+- **Evals**: 10 per skill
+- **Test Fixtures**: 3
+
+---
+
+**Last Updated**: 2026-03-16

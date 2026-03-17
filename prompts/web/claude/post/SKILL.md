@@ -116,7 +116,8 @@ Se entrada tiver apenas um valor:
 - **PROIBIDO**: Usar cargo como hook (ex: "Senior Backend Engineer")
 - **PROIBIDO**: Usar separadores (---, ===, ___) ou rótulos (POST 1, VAGA 1)
 - **PROIBIDO**: Usar mais de 1 emoji por linha
-- **PROIBIDO**: Travessões (—)
+- **PROIBIDO**: Travessões (-)
+- **REGRA**: Use o hífen curto (-) para separadores e o en-dash (–) exclusivamente para faixas salariais.
 - **SEMPRE**: Faixa salarial explícita (nunca "a combinar")
 - **AVISAR**: Que gerou link com invite=caroline.lima798
 

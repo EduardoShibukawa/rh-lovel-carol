@@ -99,7 +99,7 @@ Faz sentido?
 ## Limitations
 
 - **PROIBIDO**: Exceder 300 caracteres na M1
-- **PROIBIDO**: Usar travessões (—) ou separadores (---)
+- **PROIBIDO**: Usar travessões (-) ou separadores (---)
 - **PROIBIDO**: Usar mais de 1 emoji por mensagem
 - **PROIBIDO**: Frases genéricas ("Hope this finds you well", "boa tarde")
 - **SEMPRE**: Sugerir faixa salarial explícita na M2
