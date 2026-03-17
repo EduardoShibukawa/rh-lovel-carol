@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-SKILLS_PATH = Path(__file__).parent.parent
+SKILLS_PATH = Path(__file__).parent.parent.parent
 
 def validate_skill_structure(skill_path: Path) -> dict:
     """Valida estrutura básica de uma skill"""
