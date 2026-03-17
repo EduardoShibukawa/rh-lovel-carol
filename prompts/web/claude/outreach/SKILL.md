@@ -10,7 +10,7 @@ Não use para: criar boolean queries, escrever posts, analisar CVs."
 
 ## Overview
 
-Skill para criar mensagens de outreach personalizadas seguindo a 3x3 Rule de Stacy Zapar (máx 200 caracteres na M1) e estrutura de P-C-T-F de Allie Miller.
+Skill para criar mensagens de outreach personalizadas seguindo a 3x3 Rule de Stacy Zapar (máx 300 caracteres na M1) e estrutura de P-C-T-F de Allie Miller.
 
 ## Autoridades Aplicadas
 
