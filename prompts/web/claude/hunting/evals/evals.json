@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Boolean para vaga: Desenvolvedor Backend Java Sr - R$10k-13k - híbrido SP - CLT - 4y - Java, SQL, JBoss, JPA/Hibernate",
+      "prompt": "Boolean para vaga: Desenvolvedor Backend Java Sr - R$10k-13k - híbrido SP - CLT - 4y - Java, Spring, PostgreSQL",
       "expected_output": "Boolean 5+ sinônimos Java, X-Ray, exclusões júnior, SP"
     },
     {
@@ -13,8 +13,8 @@
     },
     {
       "id": 3,
-      "prompt": "Boolean para vaga: QA Jr - R$3k-4.5k - presencial Fortaleza - PJ - 2y - Cypress, Selenium",
-      "expected_output": "Boolean QA, EXCLUI Senior, Fortaleza"
+      "prompt": "Boolean para vaga: QA Jr - R$3k-4.5k - presencial SP - PJ - 2y - Cypress, Selenium",
+      "expected_output": "Boolean QA, EXCLUI Senior, SP"
     },
     {
       "id": 4,
@@ -23,33 +23,33 @@
     },
     {
       "id": 5,
-      "prompt": "Boolean para candidato: Luffy - Desenvolvedor Java Senior, 10+ anos, Springboot, AWS, MicroServiços - Straw Hat Pirates",
-      "expected_output": "Boolean 5+ sinônimos Java, microservices, cloud"
+      "prompt": "Boolean para vaga: Desenvolvedor Go/Golang - R$15k-22k - remoto - CLT - 4y - Go, Kubernetes, AWS",
+      "expected_output": "Boolean 5+ sinônimos Go, X-Ray, exclusões júnior"
     },
     {
       "id": 6,
-      "prompt": "Boolean para candidato: Zoro - Senior Software Engineer, 12+ anos, Golang, Cloud, arquitetura - ex-Marine",
-      "expected_output": "Boolean Golang, microservices, cloud"
+      "prompt": "Boolean para vaga: Tech Lead .NET - R$20k-28k - híbrido SP - CLT - 6y - .NET, C#, Azure",
+      "expected_output": "Boolean .NET, C#, liderança, exclusões júnior"
     },
     {
       "id": 7,
-      "prompt": "Boolean para candidato: Nami - Java 15+ anos, Weather Systems, arquitetura - Treasure Cruise Inc",
-      "expected_output": "Boolean Java, arquitetura, sistemas"
+      "prompt": "Boolean para vaga: Desenvolvedor Android Kotlin - R$12k-16k - remoto - CLT - 3y - Kotlin, Android, Firebase",
+      "expected_output": "Boolean Android, Kotlin, Mobile, exclusões júnior"
     },
     {
       "id": 8,
-      "prompt": "Boolean para candidato: Sanji - Tech Lead, 22+ anos, Kitchen Crew, microservices - Baratie",
-      "expected_output": "Boolean Java, leadership, microservices"
+      "prompt": "Boolean para vaga: DevOps AWS - R$14k-18k - híbrido SP - CLT - 4y - AWS, Kubernetes, Terraform",
+      "expected_output": "Boolean DevOps, AWS, Kubernetes, exclusões júnior"
     },
     {
       "id": 9,
-      "prompt": "Boolean para candidato: Franky - DevOps, 8+ anos, AWS, Kubernetes, shipwright - Water 7",
-      "expected_output": "Boolean DevOps, Kubernetes, cloud"
+      "prompt": "Boolean para vaga: Data Engineer - R$16k-22k - remoto - CLT - 4y - Python, Spark, AWS",
+      "expected_output": "Boolean Data Engineer, Python, Spark, exclusões júnior"
     },
     {
       "id": 10,
-      "prompt": "Boolean para vaga: ADVPL - R$6k-10k - presencial São Paulo - PJ - 3y - ADVPL, Protheus",
-      "expected_output": "Boolean ADVPL, Protheus, São Paulo"
+      "prompt": "Boolean para vaga: Desenvolvedor PHP Laravel - R$8k-12k - presencial SP - PJ - 3y - PHP, Laravel, MySQL",
+      "expected_output": "Boolean PHP, Laravel, exclusões júnior"
     }
   ]
 }
