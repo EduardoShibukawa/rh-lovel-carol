@@ -3,33 +3,53 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Go/Golang Senior em fintech de pagamentos, São Paulo, CLT",
-      "expected_output": "Boolean com 5+ sinônimos para Go, X-Ray search, exclusões júnior/estágio"
+      "prompt": "Boolean para vaga: Desenvolvedor Backend Java Sr - R$10k-13k - híbrido SP - CLT - 4y - Java, SQL, JBoss, JPA/Hibernate",
+      "expected_output": "Boolean 5+ sinônimos Java, X-Ray, exclusões júnior, SP"
     },
     {
       "id": 2,
-      "prompt": "SDR/BDR para consultoria em Curitiba, PJ",
-      "expected_output": "Boolean comercial com ICP, Seed/Net/Spear, localização específica"
+      "prompt": "Boolean para vaga: Senior Python - R$15k-19k - remoto - CLT - 4y - Python, AWS, Docker, Django",
+      "expected_output": "Boolean 5+ sinônimos Python, X-Ray, exclusões júnior"
     },
     {
       "id": 3,
-      "prompt": "QA Engineer com Playwright, remoto Brasil",
-      "expected_output": "Boolean com sinônimos para QA, ferramentas de automação, X-Ray"
+      "prompt": "Boolean para vaga: QA Jr - R$3k-4.5k - presencial Fortaleza - PJ - 2y - Cypress, Selenium",
+      "expected_output": "Boolean QA, EXCLUI Senior, Fortaleza"
     },
     {
       "id": 4,
-      "prompt": "Tech Lead .NET sem localização",
-      "expected_output": "Boolean com expansão de localização (Brasil), 5+ sinônimos, exclusões"
+      "prompt": "Boolean para vaga: Frontend React/RN - R$10k-13k - híbrido Fortaleza - PJ - 4y - React, React Native",
+      "expected_output": "Boolean React, React Native, exclusões júnior"
     },
     {
       "id": 5,
-      "prompt": "Data Scientist com Python e Machine Learning, remoto",
-      "expected_output": "Boolean com sinônimos para ML, Data Science, X-Ray, exclusões júnior"
+      "prompt": "Boolean para candidato: Goku - Desenvolvedor Java Senior, 10+ anos, Springboot, AWS, MicroServiços - atualmente na Capsule Corp",
+      "expected_output": "Boolean 5+ sinônimos Java, microservices, cloud"
     },
     {
       "id": 6,
-      "prompt": "Estagiário de TI",
-      "expected_output": "Boolean INVERTENDO exclusões (procurando júnior), localização"
+      "prompt": "Boolean para candidato: Bulma - Senior Software Engineer, 12+ anos, Golang, Cloud, arquitetura - Capsule Corp",
+      "expected_output": "Boolean Golang, microservices, cloud"
+    },
+    {
+      "id": 7,
+      "prompt": "Boolean para candidato: Naruto - Java 15+ anos, Konoha Inc, microservices - Vila Oculta",
+      "expected_output": "Boolean Java, microservices"
+    },
+    {
+      "id": 8,
+      "prompt": "Boolean para candidato: Sakura - Tech Lead, 22+ anos, Team 7, microsserviços - Hospital de Konoha",
+      "expected_output": "Boolean Java, leadership, microservices"
+    },
+    {
+      "id": 9,
+      "prompt": "Boolean para candidato: Piccolo - DevOps, 8+ anos, AWS, Kubernetes, Namekusei",
+      "expected_output": "Boolean DevOps, Kubernetes, cloud"
+    },
+    {
+      "id": 10,
+      "prompt": "Boolean para vaga: ADVPL - R$6k-10k - presencial Maracanaú - PJ - 3y - ADVPL, Protheus",
+      "expected_output": "Boolean ADVPL, Protheus, Ceará"
     }
   ]
 }

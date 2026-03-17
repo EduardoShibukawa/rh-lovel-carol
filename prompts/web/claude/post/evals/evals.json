@@ -3,38 +3,43 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Post para vaga Go/Golang Senior, 18k-25k, híbrido SP",
-      "expected_output": "Hook com impacto 90 dias, salary faixa, máx 4 vagas, invite sugerido"
+      "prompt": "Post para vaga: Desenvolvedor Backend Java Sr - R$10k-13k - híbrido São Paulo - CLT - 4y - Java, Spring, PostgreSQL",
+      "expected_output": "Hook com impacto 90 dias, salary faixa, modelo híbrido SP"
     },
     {
       "id": 2,
-      "prompt": "3 vagas tech em múltiplas cidades",
-      "expected_output": "3 hooks diferentes, cada vaga com salary, máximo 1 emoji por linha"
+      "prompt": "Post para vaga: Senior Software Engineer Python - R$15k-19k - remoto - CLT - 4y - Python, AWS, Docker, Django",
+      "expected_output": "Hook com impacto 90 dias, salary faixa, modelo remoto"
     },
     {
       "id": 3,
-      "prompt": "Vaga com salary único 10k",
-      "expected_output": "Salary convertido para faixa (8k-12k), nunca 'a combinar'"
+      "prompt": "Post para vaga: Analista QA Jr - R$3k-4.5k - presencial Fortaleza - PJ - 2y - Cypress, Selenium",
+      "expected_output": "Hook com impacto, salary faixa, modelo presencial"
     },
     {
       "id": 4,
-      "prompt": "6 vagas tech (maior que 4)",
-      "expected_output": "Sugere dividir em múltiplos posts (máx 4 por post)"
+      "prompt": "Post para 3 vagas: Java Backend, Python Senior, QA Jr",
+      "expected_output": "3 hooks diferentes, cada vaga com salary, máx 1 emoji por linha"
     },
     {
       "id": 5,
-      "prompt": "Vaga sem dado de impacto",
-      "expected_output": "Hook genérico técnico (ex: sistemas de alto tráfego)"
+      "prompt": "Post para vaga ADVPL - R$6k-10k - presencial Maracanaú - PJ - ADVPL, Protheus",
+      "expected_output": "Hook com impacto, salary faixa, modelo presencial Ceará"
     },
     {
       "id": 6,
-      "prompt": "Vaga com salary 'a combinar'",
-      "expected_output": "Recusa ou pergunta salary, não gera post com 'a combinar'"
+      "prompt": "Post para vaga: Frontend React/RN - R$10k-13k - híbrido Fortaleza - 4y - React, React Native",
+      "expected_output": "Hook com impacto, salary faixa, híbrido"
     },
     {
       "id": 7,
-      "prompt": "Vaga 100% Remoto",
-      "expected_output": "Modelo: Remoto | Brasil, sem indicar cidade"
+      "prompt": "Post para 5 vagas: Goku (Java Sr), Bulma (Python), Naruto (QA), Sakura (React), Piccolo (DevOps)",
+      "expected_output": "Sugere dividir em múltiplos posts (máx 4), não gera tudo junto"
+    },
+    {
+      "id": 8,
+      "prompt": "Post para vaga com salary a combinar",
+      "expected_output": "RECUSA - não gera post com 'a combinar'"
     }
   ]
 }
