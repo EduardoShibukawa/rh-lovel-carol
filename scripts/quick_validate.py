@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-SKILLS_PATH = Path(__file__).parent.parent.parent
+SKILLS_PATH = Path(__file__).parent.parent
 
 def validate_skill_structure(skill_path: Path) -> dict:
     """Valida estrutura básica de uma skill"""
@@ -51,40 +51,50 @@ def validate_skill_structure(skill_path: Path) -> dict:
 
 def main():
     print("🔍 Lovel Quick Validate")
-    print("=" * 40)
+    print("=" * 50)
     
-    skills_to_check = [
-        "hunting",
-        "outreach", 
-        "post",
-        "parecer"
-    ]
+    # Check both Claude and ChatGPT skills
+    platforms = {
+        "claude": {
+            "base": "prompts/web/claude",
+            "skills": ["hunting", "outreach", "post", "parecer"]
+        },
+        "chatgpt": {
+            "base": "prompts/web/chatgpt/skills",
+            "skills": ["skill_hunting", "skill_outreach", "skill_post"]
+        }
+    }
     
     all_valid = True
     
-    for skill in skills_to_check:
-        skill_path = SKILLS_PATH / skill
-        print(f"\n📁 Validando {skill}...")
+    for platform, config in platforms.items():
+        print(f"\n🔵 Plataforma: {platform.upper()}")
+        print("-" * 30)
         
-        if not skill_path.exists():
-            print(f"   ❌ Skill não encontrada: {skill}")
-            all_valid = False
-            continue
+        base_path = SKILLS_PATH / config["base"]
         
-        result = validate_skill_structure(skill_path)
-        
-        if result["valid"]:
-            print(f"   ✅ Válido")
-        else:
-            print(f"   ❌ Inválido")
-            for error in result["errors"]:
-                print(f"      - {error}")
-            all_valid = False
-        
-        for warning in result["warnings"]:
-            print(f"   ⚠️  {warning}")
+        for skill in config["skills"]:
+            skill_path = base_path / skill
+            
+            if not skill_path.exists():
+                print(f"   ⚠️  {skill}: não encontrado")
+                continue
+            
+            print(f"   📁 Validando {skill}...")
+            result = validate_skill_structure(skill_path)
+            
+            if result["valid"]:
+                print(f"      ✅ Válido")
+            else:
+                print(f"      ❌ Inválido")
+                for error in result["errors"]:
+                    print(f"         - {error}")
+                all_valid = False
+            
+            for warning in result["warnings"]:
+                print(f"      ⚠️  {warning}")
     
-    print("\n" + "=" * 40)
+    print("\n" + "=" * 50)
     if all_valid:
         print("✅ Todas as skills são válidas!")
     else:

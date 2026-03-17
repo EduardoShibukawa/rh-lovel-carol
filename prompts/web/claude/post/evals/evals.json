@@ -1,0 +1,20 @@
+{
+  "skill_name": "lovel-post",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Post para vaga Go/Golang Senior, 18k-25k, híbrido SP",
+      "expected_output": "Hook com impacto 90 dias, salary faixa, máx 4 vagas, invite sugerido"
+    },
+    {
+      "id": 2,
+      "prompt": "3 vagas tech em múltiplas cidades",
+      "expected_output": "3 hooks diferentes, cada vaga com salary, máximo 1 emoji por linha"
+    },
+    {
+      "id": 3,
+      "prompt": "Vaga com salary único 10k",
+      "expected_output": "Salary convertido para faixa (8k-12k), nunca 'a combinar'"
+    }
+  ]
+}
