@@ -13,7 +13,7 @@ import json
 import sys
 from pathlib import Path
 
-SKILLS_ROOT = Path(__file__).parent.parent
+SKILLS_ROOT = Path(__file__).parent.parent.parent.parent
 
 def find_evals(skill_path: str) -> dict:
     """Encontra evals da skill"""

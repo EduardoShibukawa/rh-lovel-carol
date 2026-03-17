@@ -13,7 +13,7 @@ import sys
 import re
 from pathlib import Path
 
-SKILLS_ROOT = Path(__file__).parent.parent
+SKILLS_ROOT = Path(__file__).parent.parent.parent.parent
 
 def analyze_description(skill_path: str) -> dict:
     """Analisa e sugere melhorias na description"""
@@ -84,19 +84,41 @@ def analyze_description(skill_path: str) -> dict:
         "suggestions": suggestions
     }
 
+def find_skill(skill_path: str) -> Path:
+    """Encontra a skill em diferentes caminhos"""
+    skill_path_obj = Path(skill_path)
+    
+    # Se é um caminho direto válido
+    if skill_path_obj.exists():
+        return skill_path_obj
+    
+    # Tentar em diferentes localizações
+    paths_to_try = [
+        SKILLS_ROOT / "prompts/web/claude" / skill_path,
+        SKILLS_ROOT / "prompts/web/claude" / skill_path / "SKILL.md",
+        SKILLS_ROOT / "prompts/web/chatgpt/skills" / skill_path,
+    ]
+    
+    for path in paths_to_try:
+        if path.exists():
+            return path
+    
+    # Se não encontrar, retorna o original
+    return skill_path_obj
+
 def main():
     if len(sys.argv) < 2:
         print("🔍 Lovel Improve Description")
         print("=" * 50)
-        print("\nUsage: python scripts/improve_description.py <skill-path>")
+        print("\nUsage: python scripts/improve_description.py <skill>")
         print("\nExemplos:")
-        print("  python scripts/improve_description.py prompts/web/claude/hunting")
-        print("  python scripts/improve_description.py prompts/web/claude/outreach")
-        print("  python scripts/improve_description.py prompts/web/chatgpt/skills/skill_hunting.md")
+        print("  python scripts/improve_description.py hunting")
+        print("  python scripts/improve_description.py outreach")
         sys.exit(1)
     
     skill_path = sys.argv[1]
-    result = analyze_description(skill_path)
+    skill_full_path = find_skill(skill_path)
+    result = analyze_description(str(skill_full_path))
     
     print("\n" + "=" * 50)
     print(f"📁 Skill: {skill_path}")
