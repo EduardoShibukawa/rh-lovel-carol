@@ -1,0 +1,29 @@
+{
+  "skill_name": "chatgpt-skills",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "skill_hunting",
+      "prompt": "Go/Golang Senior em fintech de pagamentos, São Paulo, CLT",
+      "expected_output": "Boolean com 5+ sinônimos para Go, X-Ray search, exclusões júnior/estágio"
+    },
+    {
+      "id": 2,
+      "skill": "skill_hunting",
+      "prompt": "SDR/BDR para consultoria em Curitiba, PJ",
+      "expected_output": "Boolean comercial com ICP, Seed/Net/Spear, localização específica"
+    },
+    {
+      "id": 3,
+      "skill": "skill_outreach",
+      "prompt": "M1 para candidato SDR em Curitiba, salary 3.5k-5k",
+      "expected_output": "M1 com máx 300 caracteres, tom humano"
+    },
+    {
+      "id": 4,
+      "skill": "skill_post",
+      "prompt": "Post para vaga Go/Golang Senior, 18k-25k, híbrido SP",
+      "expected_output": "Hook com impacto 90 dias, salary faixa"
+    }
+  ]
+}
