@@ -2,6 +2,10 @@
 """
 Lovel Improve Description - Otimiza description para triggering
 Baseado em improve_description.py da skill-creator (Anthropic)
+
+Usage:
+    python scripts/improve_description.py prompts/web/claude/hunting
+    python scripts/improve_description.py prompts/web/claude/outreach
 """
 
 import json
@@ -9,60 +13,113 @@ import sys
 import re
 from pathlib import Path
 
-def improve_description(skill_path: str) -> dict:
-    """Melhora description de uma skill para melhor triggering"""
+SKILLS_ROOT = Path(__file__).parent.parent
+
+def analyze_description(skill_path: str) -> dict:
+    """Analisa e sugere melhorias na description"""
     
-    skill_md = Path(skill_path) / "SKILL.md"
+    # Handle both file and directory paths
+    skill_path_obj = Path(skill_path)
+    if skill_path_obj.is_file():
+        skill_md = skill_path_obj
+    else:
+        skill_md = skill_path_obj / "SKILL.md"
+    
     if not skill_md.exists():
-        return {"error": "SKILL.md não encontrado"}
+        return {"error": f"SKILL.md não encontrado: {skill_md}"}
     
     content = skill_md.read_text()
+    issues = []
+    suggestions = []
     
-    # Extract current description
-    desc_match = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
-    if not desc_match:
-        return {"error": "Frontmatter não encontrado"}
+    # Check format
+    is_yaml = content.startswith("---")
     
-    frontmatter = desc_match.group(1)
-    
-    # Check if description is too short
-    if "description:" in frontmatter:
-        desc_line = [l for l in frontmatter.split('\n') if l.startswith('description:')][0]
-        desc_len = len(desc_line)
+    if is_yaml:
+        # Claude format
+        desc_match = re.search(r'description:\s*"([^"]+)"', content)
+        if desc_match:
+            desc = desc_match.group(1)
+            desc_len = len(desc)
+            
+            print(f"\n📝 Description atual ({desc_len} chars):")
+            print(f"   {desc[:100]}...")
+            
+            if desc_len < 50:
+                issues.append(f"Description muito curta ({desc_len} chars)")
+                suggestions.append("Adicione mais contextos de uso (mínimo 50 chars)")
+            elif desc_len < 100:
+                issues.append(f"Description curta ({desc_len} chars)")
+                suggestions.append("Considere adicionar mais detalhes para melhor triggering")
         
-        if desc_len < 100:
-            print(f"⚠️  Description muito curta ({desc_len} chars)")
-            print("   Sugestão: Adicione mais contextos de uso")
+        # Check "Use para:"
+        if "Use para:" not in content:
+            issues.append("Falta 'Use para:'")
+            suggestions.append("Adicione seção 'Use para:' com contextos específicos")
+        
+        # Check "Não use para:"
+        if "Não use para:" not in content:
+            issues.append("Falta 'Não use para:'")
+            suggestions.append("Adicione 'Não use para:' para evitar falsos positivos")
+            
+        # Check for examples
+        if "## Examples" not in content and "### ✅ BOM" not in content:
+            suggestions.append("Adicione exemplos (## Examples)")
+        
+        # Check for limitations
+        if "## Limitations" not in content and "Limitations" not in content:
+            suggestions.append("Adicione seção ## Limitations")
     
-    # Check if lacks "Use for" or "Don't use for"
-    if "Use para:" not in content:
-        print("⚠️  Falta 'Use para:' - ajuda triggering")
-    
-    if "Não use para:" not in content:
-        print("⚠️  Falta 'Não use para:' - ajuda triggering")
+    else:
+        # ChatGPT format (XML)
+        if "<skill" not in content:
+            issues.append("Falta tag <skill>")
+        
+        if "<pre_exec>" not in content:
+            suggestions.append("Considere adicionar <pre_exec> para validação")
     
     return {
-        "suggestions": [
-            "Tornar description mais 'pushy' para evitar undertriggering",
-            "Adicionar contextos específicos de quando usar",
-            "Adicionar 'Não use para' para evitar falsos positivos"
-        ]
+        "valid": len(issues) == 0,
+        "issues": issues,
+        "suggestions": suggestions
     }
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python improve_description.py <skill-path>")
+        print("🔍 Lovel Improve Description")
+        print("=" * 50)
+        print("\nUsage: python scripts/improve_description.py <skill-path>")
+        print("\nExemplos:")
+        print("  python scripts/improve_description.py prompts/web/claude/hunting")
+        print("  python scripts/improve_description.py prompts/web/claude/outreach")
+        print("  python scripts/improve_description.py prompts/web/chatgpt/skills/skill_hunting.md")
         sys.exit(1)
     
     skill_path = sys.argv[1]
-    result = improve_description(skill_path)
+    result = analyze_description(skill_path)
+    
+    print("\n" + "=" * 50)
+    print(f"📁 Skill: {skill_path}")
+    print("=" * 50)
     
     if "error" in result:
         print(f"❌ {result['error']}")
-    else:
-        print("✅ Análise concluída")
-        for suggestion in result.get("suggestions", []):
+        sys.exit(1)
+    
+    if result["issues"]:
+        print(f"\n🔴 Problemas encontrados ({len(result['issues'])}):")
+        for issue in result["issues"]:
+            print(f"   ❌ {issue}")
+    
+    if result["suggestions"]:
+        print(f"\n💡 Sugestões de melhoria ({len(result['suggestions'])}):")
+        for suggestion in result["suggestions"]:
             print(f"   💡 {suggestion}")
+    
+    if not result["issues"] and not result["suggestions"]:
+        print("\n✅ Skill está otimizada!")
+    
+    print()
 
 if __name__ == "__main__":
     main()

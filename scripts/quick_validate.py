@@ -15,33 +15,55 @@ def validate_skill_structure(skill_path: Path) -> dict:
     errors = []
     warnings = []
     
-    # Check SKILL.md exists
-    skill_md = skill_path / "SKILL.md"
+    # Check if it's a file or directory
+    if skill_path.is_file():
+        # ChatGPT format: single .md file
+        skill_md = skill_path
+    else:
+        # Claude format: directory with SKILL.md
+        skill_md = skill_path / "SKILL.md"
+    
     if not skill_md.exists():
-        errors.append(f"SKILL.md não encontrado em {skill_path}")
+        errors.append(f"Skill file not found: {skill_md}")
         return {"valid": False, "errors": errors, "warnings": warnings}
     
     # Check YAML frontmatter
     content = skill_md.read_text()
-    if not content.startswith("---"):
-        errors.append("SKILL.md deve começar com YAML frontmatter (---)")
     
-    # Check name field
-    if "name:" not in content:
-        errors.append("Falta campo 'name' no frontmatter")
+    # For Claude skills (YAML format)
+    if content.startswith("---"):
+        if "name:" not in content:
+            errors.append("Falta campo 'name' no frontmatter")
+        if "description:" not in content:
+            errors.append("Falta campo 'description' no frontmatter")
+        
+        # Check for improvements
+        if "Use para:" not in content:
+            warnings.append("Sugestão: Adicionar 'Use para:'")
+        if "Não use para:" not in content:
+            warnings.append("Sugestão: Adicionar 'Não use para:'")
+        
+        # Check description length
+        import re
+        desc_match = re.search(r'description:\s*"([^"]+)"', content)
+        if desc_match:
+            desc_len = len(desc_match.group(1))
+            if desc_len < 50:
+                warnings.append(f"Sugestão: Description muito curta ({desc_len} chars), considere adicionar mais contextos")
+    else:
+        # ChatGPT format (XML)
+        if "<skill" not in content:
+            errors.append("Falta tag <skill> no arquivo")
     
-    # Check description field
-    if "description:" not in content:
-        errors.append("Falta campo 'description' no frontmatter")
-    
-    # Check evals directory
-    evals_dir = skill_path / "evals"
-    if evals_dir.exists():
-        evals_file = evals_dir / "evals.json"
-        if evals_file.exists():
-            print(f"   ✅ Evals found")
-        else:
-            warnings.append("Diretório evals sem evals.json")
+    # Check evals directory (Claude only)
+    if skill_path.is_dir():
+        evals_dir = skill_path / "evals"
+        if evals_dir.exists():
+            evals_file = evals_dir / "evals.json"
+            if evals_file.exists():
+                print(f"         📋 Evals found")
+            else:
+                warnings.append("Diretório evals sem evals.json")
     
     return {
         "valid": len(errors) == 0,
@@ -61,7 +83,7 @@ def main():
         },
         "chatgpt": {
             "base": "prompts/web/chatgpt/skills",
-            "skills": ["skill_hunting", "skill_outreach", "skill_post"]
+            "skills": ["skill_hunting.md", "skill_outreach.md", "skill_post.md"]
         }
     }
     
