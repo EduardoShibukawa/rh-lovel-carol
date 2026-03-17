@@ -3,32 +3,32 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "M1 para Goku - Desenvolvedor Java Senior na Capsule Corp, 10+ anos, Springboot, AWS - vagas: Java Backend Sr R$10k-13k SP híbrido",
+      "prompt": "M1 para Luffy - Desenvolvedor Java Senior na Straw Hat Pirates, 10+ anos, Springboot, AWS - vagas: Java Backend Sr R$10k-13k SP híbrido",
       "expected_output": "M1 < 300 chars, menciona Java/Spring, tom humano, sem travessões"
     },
     {
       "id": 2,
-      "prompt": "M1 para Bulma - Senior Software Engineer, 12+ anos, Golang, Cloud - vaga: Python Senior R$15k-19k remoto",
+      "prompt": "M1 para Zoro - Senior Software Engineer, 12+ anos, Golang, Cloud - vaga: Python Senior R$15k-19k remoto",
       "expected_output": "M1 < 300 chars, menciona Golang/Python, tom humano"
     },
     {
       "id": 3,
-      "prompt": "M1 para Naruto - Java 15+ anos, Konoha Inc, Vila Oculta - vaga: Java Backend R$10k-13k SP híbrido",
-      "expected_output": "M1 < 300 chars, menciona experiência, tom humano"
+      "prompt": "M1 para Nami - Java 15+ anos, Weather Systems, Treasure Cruise - vaga: Java Backend R$10k-13k SP híbrido",
+      "expected_output": "M1 < 300 chars, menciona experiência, tom Humano"
     },
     {
       "id": 4,
-      "prompt": "Follow-up Day 4 para candidato que não respondeu - Goku",
+      "prompt": "Follow-up Day 4 para candidato que não respondeu - Luffy",
       "expected_output": "Day 4, mensagem amigável, 1 emoji"
     },
     {
       "id": 5,
-      "prompt": "M2 completo para vaga Java Sr com Goku",
+      "prompt": "M2 completo para vaga Java Sr com Luffy",
       "expected_output": "Empresa, cargo, salary faixa (R$10k-13k), modelo, link com invite sugerido"
     },
     {
       "id": 6,
-      "prompt": "M1 para Sakura - Tech Lead Java, 22+ anos, Time 7, microsserviços - vaga: Java Senior",
+      "prompt": "M1 para Sanji - Tech Lead, 22+ anos, Kitchen Crew, microservices - vaga: Java Senior",
       "expected_output": "M1 < 300 chars, menciona liderança técnica"
     }
   ]

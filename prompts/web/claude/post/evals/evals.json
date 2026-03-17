@@ -13,27 +13,27 @@
     },
     {
       "id": 3,
-      "prompt": "Post para vaga: Analista QA Jr - R$3k-4.5k - presencial Fortaleza - PJ - 2y - Cypress, Selenium",
+      "prompt": "Post para vaga: Analista QA Jr - R$3k-4.5k - presencial SP - PJ - 2y - Cypress, Selenium",
       "expected_output": "Hook com impacto, salary faixa, modelo presencial"
     },
     {
       "id": 4,
-      "prompt": "Post para 3 vagas: Java Backend, Python Senior, QA Jr",
+      "prompt": "Post para 3 vagas: Luffy (Java), Zoro (Python), Nami (QA)",
       "expected_output": "3 hooks diferentes, cada vaga com salary, máx 1 emoji por linha"
     },
     {
       "id": 5,
-      "prompt": "Post para vaga ADVPL - R$6k-10k - presencial Maracanaú - PJ - ADVPL, Protheus",
-      "expected_output": "Hook com impacto, salary faixa, modelo presencial Ceará"
+      "prompt": "Post para vaga: Sanji (Chef) - R$6k-10k - presencial SP - PJ - 3y - Kitchen, Gastronomia",
+      "expected_output": "Hook com impacto, salary faixa, modelo presencial"
     },
     {
       "id": 6,
-      "prompt": "Post para vaga: Frontend React/RN - R$10k-13k - híbrido Fortaleza - 4y - React, React Native",
+      "prompt": "Post para vaga: Frontend React/RN - R$10k-13k - híbrido SP - 4y - React, React Native",
       "expected_output": "Hook com impacto, salary faixa, híbrido"
     },
     {
       "id": 7,
-      "prompt": "Post para 5 vagas: Goku (Java Sr), Bulma (Python), Naruto (QA), Sakura (React), Piccolo (DevOps)",
+      "prompt": "Post para 5 vagas: Luffy (Java), Zoro (Python), Nami (QA), Sanji (Chef), Franky (DevOps)",
       "expected_output": "Sugere dividir em múltiplos posts (máx 4), não gera tudo junto"
     },
     {

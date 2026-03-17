@@ -18,38 +18,38 @@
     },
     {
       "id": 4,
-      "prompt": "Boolean para vaga: Frontend React/RN - R$10k-13k - híbrido Fortaleza - PJ - 4y - React, React Native",
+      "prompt": "Boolean para vaga: Frontend React/RN - R$10k-13k - híbrido SP - PJ - 4y - React, React Native",
       "expected_output": "Boolean React, React Native, exclusões júnior"
     },
     {
       "id": 5,
-      "prompt": "Boolean para candidato: Goku - Desenvolvedor Java Senior, 10+ anos, Springboot, AWS, MicroServiços - atualmente na Capsule Corp",
+      "prompt": "Boolean para candidato: Luffy - Desenvolvedor Java Senior, 10+ anos, Springboot, AWS, MicroServiços - Straw Hat Pirates",
       "expected_output": "Boolean 5+ sinônimos Java, microservices, cloud"
     },
     {
       "id": 6,
-      "prompt": "Boolean para candidato: Bulma - Senior Software Engineer, 12+ anos, Golang, Cloud, arquitetura - Capsule Corp",
+      "prompt": "Boolean para candidato: Zoro - Senior Software Engineer, 12+ anos, Golang, Cloud, arquitetura - ex-Marine",
       "expected_output": "Boolean Golang, microservices, cloud"
     },
     {
       "id": 7,
-      "prompt": "Boolean para candidato: Naruto - Java 15+ anos, Konoha Inc, microservices - Vila Oculta",
-      "expected_output": "Boolean Java, microservices"
+      "prompt": "Boolean para candidato: Nami - Java 15+ anos, Weather Systems, arquitetura - Treasure Cruise Inc",
+      "expected_output": "Boolean Java, arquitetura, sistemas"
     },
     {
       "id": 8,
-      "prompt": "Boolean para candidato: Sakura - Tech Lead, 22+ anos, Team 7, microsserviços - Hospital de Konoha",
+      "prompt": "Boolean para candidato: Sanji - Tech Lead, 22+ anos, Kitchen Crew, microservices - Baratie",
       "expected_output": "Boolean Java, leadership, microservices"
     },
     {
       "id": 9,
-      "prompt": "Boolean para candidato: Piccolo - DevOps, 8+ anos, AWS, Kubernetes, Namekusei",
+      "prompt": "Boolean para candidato: Franky - DevOps, 8+ anos, AWS, Kubernetes, shipwright - Water 7",
       "expected_output": "Boolean DevOps, Kubernetes, cloud"
     },
     {
       "id": 10,
-      "prompt": "Boolean para vaga: ADVPL - R$6k-10k - presencial Maracanaú - PJ - 3y - ADVPL, Protheus",
-      "expected_output": "Boolean ADVPL, Protheus, Ceará"
+      "prompt": "Boolean para vaga: ADVPL - R$6k-10k - presencial São Paulo - PJ - 3y - ADVPL, Protheus",
+      "expected_output": "Boolean ADVPL, Protheus, São Paulo"
     }
   ]
 }
