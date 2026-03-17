@@ -79,7 +79,7 @@ def main():
     platforms = {
         "claude": {
             "base": "prompts/web/claude",
-            "skills": ["hunting", "outreach", "post", "parecer"]
+            "skills": ["hunting", "outreach", "post", "parecer", "tester", "skill"]
         },
         "chatgpt": {
             "base": "prompts/web/chatgpt/skills",
