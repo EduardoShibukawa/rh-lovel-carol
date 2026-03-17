@@ -15,7 +15,7 @@ import sys
 import re
 from pathlib import Path
 
-SKILLS_ROOT = Path(__file__).parent.parent
+SKILLS_ROOT = Path(__file__).parent.parent.parent.parent
 
 def validate_skill_structure(skill_path: Path) -> dict:
     """Valida estrutura básica de uma skill"""
@@ -76,9 +76,9 @@ def main():
     if not args:
         # Validate all
         platforms = {
-            "claude": {"base": "prompts/web/claude", "skills": ["hunting", "outreach", "post", "parecer", "skill"]},
+            "claude": {"base": "prompts/web/claude", "skills": ["hunting", "outreach", "post", "parecer"]},
             "chatgpt": {"base": "prompts/web/chatgpt/skills", "skills": ["skill_hunting.md", "skill_outreach.md", "skill_post.md", "skill_parecer.md"]},
-            "root": {"base": ".", "skills": ["tester"]}
+            "skills": {"base": "skills", "skills": ["lovel-tester"]}
         }
         
         all_valid = True
@@ -118,10 +118,8 @@ def main():
         
         # Try different paths
         paths_to_try = [
-            SKILLS_ROOT / target,
+            SKILLS_ROOT / "skills" / target,
             SKILLS_ROOT / "prompts/web/claude" / target,
-            SKILLS_ROOT / "prompts/web/chatgpt/skills" / target,
-            SKILLS_ROOT / "prompts/web/claude" / target / "SKILL.md",
             SKILLS_ROOT / "prompts/web/chatgpt/skills" / target,
         ]
         
