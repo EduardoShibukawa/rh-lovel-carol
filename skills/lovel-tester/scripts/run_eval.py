@@ -1,63 +1,23 @@
 #!/usr/bin/env python3
 """
-Lovel REAL Eval Runner - Professional Prompt Engineering Edition
-Based on the Anthropic skill-creator architecture.
-
-Features:
-- Real-time LLM execution via 'gemini' CLI.
-- LLM-as-a-Judge grading via 'grader.md'.
-- Token usage tracking and cost estimation.
-- Consistency checks across multiple iterations.
+Lovel Eval Runner - OpenCode Only
+Uses OpenCode (Claude) for both eval and grading.
 """
 
 import json
 import sys
-import subprocess
-import os
 import re
 import statistics
 from pathlib import Path
 
-# --- Configuration ---
+import llm_client
+
 ROOT = Path(__file__).resolve().parent.parent.parent.parent
 GRADER_FILE = ROOT / "skills/lovel-tester/agents/grader.md"
-COST_PER_1M_TOKENS = 0.15  # Gemini Flash estimation
 
-def call_llm(prompt: str, system_prompt: str = "") -> dict:
-    """Execute real LLM call via gemini CLI and extract metadata."""
-    full_prompt = f"{system_prompt}\n\nUser: {prompt}\n\nResponse:" if system_prompt else prompt
-    try:
-        process = subprocess.Popen(['gemini', '-o', 'json'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        stdout, stderr = process.communicate(input=full_prompt)
-        
-        if process.returncode != 0:
-            return {"error": stderr, "output": "", "tokens": 0, "latency": 0}
-        
-        json_objs = re.findall(r'\{.*\}', stdout, re.DOTALL)
-        for obj_str in reversed(json_objs):
-            try:
-                data = json.loads(obj_str)
-                if "response" in data and "stats" in data:
-                    tokens = 0
-                    latency = 0
-                    for model in data["stats"].get("models", {}).values():
-                        tokens += model.get("tokens", {}).get("total", 0)
-                        latency += model.get("api", {}).get("totalLatencyMs", 0)
-                    return {
-                        "output": data["response"].strip(),
-                        "tokens": tokens,
-                        "latency": latency,
-                        "error": None
-                    }
-            except json.JSONDecodeError:
-                continue
-        return {"output": stdout.strip(), "tokens": 0, "latency": 0, "error": "Metadata parsing failed"}
-    except Exception as e:
-        return {"error": str(e), "output": "", "tokens": 0, "latency": 0}
 
-def find_evals(target: str):
+def find_evals(target: str) -> tuple:
     """Find evals based on target (skill name, platform, or 'full')."""
-    # 1. Claude folder
     claude_path = ROOT / "prompts/web/claude" / target
     if claude_path.is_dir():
         eval_file = claude_path / "evals" / "evals.json"
@@ -65,7 +25,6 @@ def find_evals(target: str):
             with open(eval_file) as f:
                 return json.load(f), claude_path
 
-    # 2. ChatGPT file
     chatgpt_eval_file = ROOT / "prompts/web/chatgpt/evals/evals.json"
     if chatgpt_eval_file.exists():
         with open(chatgpt_eval_file) as f:
@@ -74,7 +33,6 @@ def find_evals(target: str):
             filtered = [e for e in data.get("evals", []) if e.get("skill") == target]
             if filtered: return {"skill_name": f"ChatGPT: {target}", "evals": filtered}, chatgpt_eval_file
 
-    # 3. Full Test
     if target == "full":
         full_test = ROOT / "skills/lovel-tester/evals/full_test.json"
         if full_test.exists():
@@ -82,6 +40,7 @@ def find_evals(target: str):
                 return json.load(f), full_test.parent
 
     return None, None
+
 
 def grade_response(skill_name: str, prompt: str, expected: str, actual: str) -> dict:
     """Grade the response using the LLM-as-a-Judge agent."""
@@ -91,8 +50,7 @@ def grade_response(skill_name: str, prompt: str, expected: str, actual: str) -> 
     with open(GRADER_FILE) as f:
         instructions = f.read()
 
-    grade_prompt = f"""
-Evaluate the following recruiting skill response:
+    grade_prompt = f"""Evaluate the following recruiting skill response:
 ---
 Skill: {skill_name}
 Input: {prompt}
@@ -101,16 +59,22 @@ Actual Output: {actual}
 ---
 Return only a JSON object: {{"passed": boolean, "score": 0-10, "final_verdict": "short reason"}}
 """
-    result = call_llm(grade_prompt, system_prompt=instructions)
+    result = llm_client.call_llm(grade_prompt, system_prompt=instructions, for_grading=True)
     response = result["output"]
     
     try:
-        json_match = re.search(r'\{.*\}', response, re.DOTALL)
+        json_match = re.search(r'\{[\s\S]*\}', response)
         if json_match:
-            return json.loads(json_match.group())
-        return {"passed": False, "score": 0, "final_verdict": f"Invalid Grader JSON: {response[:50]}..."}
+            data = json.loads(json_match.group())
+            if "passed" in data and "score" in data:
+                data.setdefault("final_verdict", data.get("evaluations", [{}])[0].get("evidence", "OK") if data.get("evaluations") else "Evaluated")
+                return data
+        return {"passed": False, "score": 0, "final_verdict": f"Invalid Grader JSON: {response[:100]}..."}
+    except json.JSONDecodeError as e:
+        return {"passed": False, "score": 0, "final_verdict": f"JSON parse error: {str(e)} | Response: {response[:100]}..."}
     except Exception as e:
-        return {"passed": False, "score": 0, "final_verdict": f"Parsing error: {str(e)}"}
+        return {"passed": False, "score": 0, "final_verdict": f"Error: {str(e)}"}
+
 
 def calculate_consistency(outputs: list) -> dict:
     """Calculate consistency across multiple runs."""
@@ -128,7 +92,22 @@ def calculate_consistency(outputs: list) -> dict:
         "coeff_var": round(coeff_var, 3)
     }
 
-def run_benchmark(target: str, iters: int = 1):
+
+def load_fixture(prompt: str) -> str:
+    """Replace {{fixture:name}} with the content of the file in tests/fixtures/."""
+    fixtures_dir = ROOT / "prompts/web/claude/tests/fixtures"
+    matches = re.findall(r'\{\{fixture:(.*?)\}\}', prompt)
+    for name in matches:
+        for ext in [".md", ""]:
+            fixture_file = fixtures_dir / (name + ext)
+            if fixture_file.exists():
+                with open(fixture_file) as f:
+                    prompt = prompt.replace(f"{{{{fixture:{name}}}}}", f.read())
+                break
+    return prompt
+
+
+def run_benchmark(target: str, iters: int = 1) -> None:
     """Run a full benchmark suite."""
     eval_data, source_path = find_evals(target)
     
@@ -140,27 +119,36 @@ def run_benchmark(target: str, iters: int = 1):
     print(f"   Source: {source_path} | Iterations: {iters}")
     print("-" * 50)
 
+    llm_client.reset_stats()
     results = []
-    total_tokens = 0
     total_latency = 0
 
     for item in eval_data["evals"]:
         skill_ctx = item.get("skill", eval_data.get("skill_name"))
-        print(f"\n📋 Eval {item['id']}: {item['prompt'][:60]}...")
+        
+        raw_prompt = item["prompt"]
+        final_prompt = load_fixture(raw_prompt)
+        
+        print(f"\n📋 Eval {item['id']}: {raw_prompt[:60]}...")
         
         run_outputs = []
         item_tokens = 0
         item_latency = 0
         
         for i in range(iters):
-            print(f"   [{i+1}/{iters}] Executing...", end="\r")
-            res = call_llm(item['prompt'])
+            print(f"   [{i+1}/{iters}] Executing...", end="\r", flush=True)
+            res = llm_client.call_llm(final_prompt)
+            
+            if res.get("error"):
+                print(f"   ❌ Error: {res.get('error')}")
+                sys.exit(1)
+            
             run_outputs.append(res['output'])
             item_tokens += res['tokens']
             item_latency += res['latency']
 
-        print(f"   ⚖️  Grading...", end="\r")
-        grading = grade_response(skill_ctx, item['prompt'], item['expected_output'], run_outputs[-1])
+        print(f"   ⚖️  Grading...", end="\r", flush=True)
+        grading = grade_response(skill_ctx, final_prompt, item['expected_output'], run_outputs[-1])
         consistency = calculate_consistency(run_outputs)
 
         result = {
@@ -173,34 +161,35 @@ def run_benchmark(target: str, iters: int = 1):
             "consistency": consistency["score"]
         }
         results.append(result)
-        total_tokens += item_tokens
         total_latency += item_latency
 
         status = "✅" if result["passed"] else "❌"
-        print(f"   {status} Score: {result['score']}/10 | Consist: {consistency['status']} {result['consistency']} | Tokens: {item_tokens}")
-        print(f"      Verdict: {result['verdict']}")
+        print(f"   {status} {result['score']}/10 | {result['verdict'][:60]}...")
 
-    # Final Summary
+    stats = llm_client.get_stats()
     passed_count = sum(1 for r in results if r["passed"])
     avg_score = statistics.mean([r["score"] for r in results])
     avg_cons = statistics.mean([r["consistency"] for r in results])
-    total_cost = (total_tokens / 1_000_000) * COST_PER_1M_TOKENS
 
     print("\n" + "="*50)
     print(f"📊 BENCHMARK SUMMARY")
     print(f"   Pass Rate:   {passed_count}/{len(results)} ({(passed_count/len(results))*100:.1f}%)")
     print(f"   Avg Score:   {avg_score:.2f}/10")
     print(f"   Consistency: {avg_cons:.2f}/10")
-    print(f"   Total Tokens: {total_tokens:,}")
-    print(f"   Total Cost:   ${total_cost:.4f}")
-    print(f"   Avg Latency:  {total_latency/len(results)/1000:.2f}s")
+    print(f"   Est. Tokens: ~{stats['total_tokens']:,}")
+    print(f"   Est. Cost:   ~${stats['total_cost']:.4f}")
+    print(f"   Avg Latency: {total_latency/len(results)/1000:.2f}s")
     print("="*50)
 
+
 if __name__ == "__main__":
+    llm_client.configure(llm_eval="opencode", llm_grading="opencode")
+    
     if len(sys.argv) < 2:
         print("Usage: python run_eval.py <target> [iterations]")
         sys.exit(1)
     
     target = sys.argv[1]
-    iters = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    iters = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else 1
+    
     run_benchmark(target, iters)

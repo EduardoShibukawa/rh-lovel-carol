@@ -29,7 +29,16 @@ rh-carol/
 
 ---
 
-## 🛠️ Commands
+## 🚀 Opencode Integration
+
+A skill `lovel-tester` está disponível no opencode global em `~/.opencode/skill/lovel-tester/`.
+
+```bash
+# Chame no opencode com:
+/lovel-tester
+```
+
+Use para testar, validar e iterar nas skills do projeto.
 
 ### Validation Scripts (Python)
 
@@ -112,7 +121,8 @@ Não use para: What to avoid
 
 **Content Rules**
 - NO em-dashes (`—`) - use regular hyphens or en-dashes for ranges
-- NO corporate jargon ("dinâmico", "oportunidade incrível")
+- NO corporate jargon ("dinâmico", "oportunidade incrível", "empresa líder", "perfil diferenciado")
+- LOVEL TONE: Conversational, direct, and human. Avoid "RHzês" and formalisms.
 - Salary always as range with en-dash: "R$ 10k – R$ 14k"
 - Keep paragraphs short (3-4 lines max)
 - Use numbered lists for steps
@@ -145,31 +155,34 @@ Output: ...
 ## 🧪 Test Criteria by Skill
 
 ### Hunting (Boolean Queries)
-- 5+ synonyms per tech term
+- 5+ synonyms per tech term (MANDATORY)
 - X-Ray search (site:linkedin.com/in)
 - NOT exclusions for junior/intern
 - Location specificity
+- Emoji: ZERO (Hunting is a technical asset)
 
 ### Outreach (DM Templates)
 - M1 max 200 characters
 - M2 with explicit salary range
 - Follow-up: Day 4 / Day 7
 - Invite parameter: `invite=caroline.lima798`
+- Emoji: Máximo 1 por mensagem (Strict)
 
 ### Post (LinkedIn)
 - Hook with 90-day impact (not job title)
 - Explicit salary range
 - Max 4 jobs per post
 - No separators/em-dashes
+- Emoji: Máximo 1 por linha (ideal para bullet points)
 
 ---
 
 ## 🔄 Development Workflow
 
-1. **Edit prompts directly** in `prompts/web/claude/` or `prompts/web/chatgpt/`
+1. **Edit prompts** in `prompts/web/claude/` or `prompts/web/chatgpt/`
 2. **Validate structure**: `python skills/lovel-tester/scripts/quick_validate.py`
-3. **Test manually**: Use test_runner.sh with fixtures
-4. **Improve descriptions**: Run improve_description.py
+3. **Run evals**: `python skills/lovel-tester/scripts/run_eval.py <skill>`
+4. **Iterate until 90%+ pass rate**
 
 ---
 
@@ -187,11 +200,15 @@ Output: ...
 
 ## 📊 Project Metrics
 
-- **Type**: Prompt Engineering Repository
-- **Skills**: 8 (4 Claude + 4 ChatGPT)
-- **Evals**: 10 per skill
-- **Test Fixtures**: 3
+| Skill | Pass Rate | Avg Score | Latency |
+|-------|-----------|-----------|---------|
+| hunting | 90% | 8.9/10 | 8.6s |
+| outreach | TBD | TBD | TBD |
+| post | TBD | TBD | TBD |
+| parecer | TBD | TBD | TBD |
+
+**Backend**: OpenCode (Claude 3.7 Sonnet) only - other backends not reliable for production.
 
 ---
 
-**Last Updated**: 2026-03-16
+**Last Updated**: 2026-03-18

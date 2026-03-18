@@ -6,91 +6,58 @@ Use para: (1) Criar boolean strings para LinkedIn Recruiter, (2) Buscar perfis i
 Não use para: escrever outreach, criar posts, analisar CVs."
 ---
 
-# HUNTING - Boolean Queries & Sourcing Strategy
+# HUNTING
 
-## Overview
+REGRAS OBRIGATÓRIAS:
+1. ZERO EMOJIS - Nenhum emoji na resposta
+2. 5+ SINÔNIMOS - Exatamente 5 ou mais sinônimos para cada termo técnico
+3. X-RAY - Incluir "site:linkedin.com/in" na resposta
+4. NOT - Excluir: junior OR júnior OR trainee OR estagio OR estágio OR aprendiz
+5. SALARY - Formato: "R$ Xk – R$ Yk" (com en-dash, não hyphen)
 
-Skill para criar boolean queries de alta qualidade e sourcing strategy, seguindo os princípios de Glen Cathey (Boolean Black Belt), Aaron Ross (Predictable Revenue) e Gergely Orosz (Pragmatic Engineer).
+OUTPUT (seguir ordem EXATA):
 
-## Autoridades Aplicadas
+## ICP
+[Resumo da tese de busca]
 
-- **Glen Cathey**: 5+ sinônimos, X-Ray, text-poor profiles, dark matter, iterative search
-- **Aaron Ross**: ICP com hipóteses testáveis, Seed/Net/Spear, SDR/BDR
-- **Gergely Orosz**: Senioridade = autonomia/impacto (não tempo de casa)
-- **Lovel**: SLA 10 dias, velocidade no sourcing
+## Salary
+R$ Xk – R$ Yk
 
-## Workflow
+## Query
+(sin1 OR sin2 OR sin3 OR sin4 OR sin5 OR sin6)
+AND (sin1 OR sin2 OR sin3 OR sin4 OR sin5 OR sin6)
+AND ("Cidade" OR "Cidade, UF")
+NOT (júnior OR junior OR trainee OR estagio OR estágio OR aprendiz)
 
-### Passo 1: Validar ICP
-Se dados incompletos, apresentar opções:
-- Senioridade: junior/pleno/senior?
-- Setor: SaaS/consultoria/agência?
-- Tipo: cold/ABM/inbound?
-- Localização: cidade ou região?
+## X-Ray
+site:linkedin.com/in "termo1" "termo2" "cidade"
 
-### Passo 2: Expandir Sinônimos (Mínimo 5)
-Para cada termo técnico:
-- Termo original
-- 5 sinônimos ou variações de cargo
-- Alternative titles do mercado
+## NOT
+NOT (júnior OR junior OR trainee OR estagio OR estágio OR aprendiz)
 
-### Passo 3: Construir Boolean String
-Estrutura:
-```
-(termo1 OR termo2 OR termo3...) 
-AND (conceito1 OR conceito2...) 
-AND (localização)
-NOT (estagio OR trainee OR aprendiz OR júnior OR junior)
-```
+EXEMPLO COMPLETO:
 
-### Passo 4: X-Ray Search (Google Bypass)
-```
-site:linkedin.com/in/ "termo" "Brasil" -"open to work"
-```
+## ICP
+Senior Go developer para microservices cloud-native.
 
-### Passo 5: Sourcing Strategy
-- Target Companies: onde o talento já está pronto
-- Insight: onde caçar além do LinkedIn
+## Salary
+R$ 15k – R$ 22k
 
-## Examples
+## Query
+("Go" OR "Golang" OR "Go developer" OR "Gopher" OR "Go-lang" OR "Go backend" OR "Go software")
+AND (Kubernetes OR K8s OR AWS OR GCP OR Docker OR Azure OR container OR "cloud native")
+AND ("São Paulo" OR "São Paulo, SP" OR "SP" OR "Região Sudeste")
+NOT (júnior OR junior OR trainee OR estagio OR estágio OR aprendiz)
 
-### ✅ BOM - Boolean Query para Go/Golang Backend
-```
-("Go" OR "Golang" OR "Go language" OR "Go developer" OR "Gopher")
-AND (backend OR "back-end" OR servidor OR API OR microservice)
-AND (Kubernetes OR K8s OR AWS OR GCP OR Azure OR "cloud native")
-NOT (júnior OR junior OR trainee OR estagio OR aprendiz)
-```
+## X-Ray
+site:linkedin.com/in "Go" "Golang" "Kubernetes" "São Paulo"
 
-### ✅ BOM - Boolean Query para SDR/BDR (Aaron Ross ICP)
-```
-("SDR" OR "BDR" OR "Sales Development" OR "Pré-vendas" OR "Executivo de Contas" OR "Consultor Comercial")
-AND (outbound OR prospecção OR "cold call" OR "lead generation" OR pipeline OR "prospecting")
-AND ("Curitiba" OR "Curitiba, PR" OR "Região Metropolitana de Curitiba")
-NOT (estágio OR trainee OR aprendiz OR júnior OR junior)
-```
+## NOT
+NOT (júnior OR junior OR trainee OR estagio OR estágio OR aprendiz)
 
-### ❌ RUIM - Query Básica (Sem sinônimos suficientes)
-```
-"Go Developer" "Brasil"
-```
-
-### ❌ RUIM - Query Sem Exclusões
-```
-("SDR" OR "BDR") AND ("Curitiba")
-```
-
-## Limitations
-
-- **PROIBIDO**: Mencionar ferramentas específicas (MeTime, Pipedrive) - são critérios de triagem
-- **PROIBIDO**: Usar apenas estado (gera muito ruído) - usar cidade + região
-- **NUNCA**: Inventar dados de impacto que não existam na vaga
-
-## Validation
-
-- [ ] Mínimo 5 sinônimos por termo técnico?
-- [ ] X-Ray search incluída (site:linkedin.com/in)?
-- [ ] Exclusões (NOT) para júnior/estágio?
-- [ ] Localização específica (cidade + estado + região)?
-- [ ] ICP estruturado com hipóteses (para vagas comerciais)?
-- [ ] Referência a text-poor profiles (candidatos invisíveis)?
+CHECKLIST:
+- [ ] Zero emojis
+- [ ] 5+ sinônimos para CADA termo
+- [ ] X-Ray com site:linkedin.com/in
+- [ ] NOT exclusions completas
+- [ ] Salary R$ Xk – R$ Yk (en-dash, não hyphen)
