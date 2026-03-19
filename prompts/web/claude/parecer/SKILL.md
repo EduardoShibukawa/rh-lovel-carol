@@ -31,7 +31,7 @@ Coletar do perfil/currículo:
 ### Passo 2: Estruturar Resumo do Perfil
 1-2 parágrafos com:
 - Cargo atual e foco principal
-- Experiência ключовая
+- Experiência relevante
 - Setor atual (se relevante)
 
 ### Passo 3: Listar Experiência Relevante
@@ -82,7 +82,7 @@ Estrutura:
 Parecer do Hunter | [Nome do Candidato] | [Cargo]
 
 Resumo do perfil
-[Resumo de 1-2 parágrafos com experiência ключовая e foco]
+[Resumo de 1-2 parágrafos com experiência relevante e foco]
 
 Experiência relevante
 [Empresa] ([período])
@@ -196,15 +196,19 @@ Recomendação
 
 - **PROIBIDO**: Usar informações não presentes no perfil
 - **PROIBIDO**: Inventar tecnologias ou experiências
+- **PROIBIDO**: Usar palavras em outros idiomas (russo, chinês, japonês, coreano, etc)
+- **PROIBIDO**: Usar palavras em inglês fora de contexto técnico (como nomes de tecnologias)
 - **PROIBIDO**: Tornar o texto muito longo (máx 1 página)
+- **SEMPRE**: Usar apenas português brasileiro
 - **SEMPRE**: Incluir offer de versão curta no final
 - **SEMPRE**: Ser transparente sobre senioridade
 
 ## Validation
 
-- [ ] Resumo com experiência ключовая?
+- [ ] Resumo com experiência relevante?
 - [ ] Stack completa e categorizada?
 - [ ] Pontos fortes específicos?
 - [ ] Pontos de atenção realistas?
 - [ ] Recomendação com próximos passos?
 - [ ] Offer de versão curta presente?
+- [ ] Texto apenas em português brasileiro?

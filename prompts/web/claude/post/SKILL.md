@@ -2,7 +2,7 @@
 name: lovel-post
 description: "LinkedIn Posts com impacto de 90 dias, transparência salarial e DNA Lovel. 
 Use para: (1) Criar posts para vagas tech, (2) Escrever hooks baseados em resultados, 
-(3) Estruturar posts com salary explícito, (4) Formatar para LinkedIn Algo.
+(3) Estruturar posts com salary explícito, (4) Formatar para LinkedIn.
 Não use para: escrever outreach, criar boolean queries, analisar CVs."
 ---
 
@@ -34,13 +34,11 @@ O título deve focar no **resultado mensurável** em 90 dias, não no nome do ca
 - RUIM: "Liderar decisões técnicas e orientar um time"
 
 ### Passo 2: Contexto
-Se a entrada não tiver setor definido, usar placeholder:
-- fintech, healthtech, SaaS, etc.
+Se a entrada não tiver setor definido, **SEMPRE inferir um setor** (fintech, healthtech, SaaS, foodtech, etc). NUNCA pedir esclarecimentos.
 
 ### Passo 3: Estrutura do Post
 ```
 [Hook = resultado 90 dias]
-[Contexto: setor ou produto]
 
 🚀 [Desafio real | 1 frase direta com resultado mensurável]
 💰 [Faixa salarial normalizada: R$ Xk – R$ Yk] | [CLT ou PJ] | [Sênior/Pleno/etc]
@@ -48,7 +46,7 @@ Se a entrada não tiver setor definido, usar placeholder:
 🛠️ [Stack principal ou ferramentas]
 🔗 [link da vaga]
 
-💡 [Gerado com invite parameter - AVISAR Carol]
+💡 invite=caroline.lima798
 ```
 
 ### Passo 4: Validação Salary
@@ -64,12 +62,12 @@ Se entrada tiver apenas um valor:
 
 ### Passo 5: Múltiplas Vagas (Máx 4 por post)
 - Variar hooks (não usar sempre "🚀 [verbo]...")
-- Até 4 vagas é a recomendação (LinkedIn Algo - dwell time)
-- Se >4 vagas, sugerir dividir em múltiplos posts
+- Até 4 vagas é a recomendação (LinkedIn - dwell time)
+- Se >4 vagas, **gerar posts separados** automaticamente
 
 ## Examples
 
-### ✅ BOM - Hook com Impacto (Lou Adler)
+### BOM - Hook com Impacto (Lou Adler)
 ```
 🚀 Tornar a API 3x mais rápida em 90 dias
 
@@ -78,10 +76,10 @@ Se entrada tiver apenas um valor:
 🛠️ Go, AWS, Kubernetes
 🔗 [link da vaga]
 
-💡 [Gerado com invite parameter - AVISAR Carol]
+💡 invite=caroline.lima798
 ```
 
-### ✅ BOM - Hook sem Dado Específico
+### BOM - Hook sem Dado Específico
 ```
 🚀 Trabalhar em sistemas de alto tráfego que processam milhões de transações
 
@@ -90,10 +88,29 @@ Se entrada tiver apenas um valor:
 🛠️ Java, Spring Boot, PostgreSQL
 🔗 [link da vaga]
 
-💡 [Gerado com invite parameter - AVISAR Carol]
+💡 invite=caroline.lima798
 ```
 
-### ❌ RUIM - Hook Genérico (SEM IMPACTO)
+### BOM - Múltiplas Vagas
+```
+🚀 Vaga 1: Escalar sistemas de pagamentos
+
+💰 R$ 15k – R$ 22k | CLT | Sênior
+📍 Remoto | Brasil
+🛠️ Go, Kubernetes
+🔗 [link1]
+
+🚀 Vaga 2: Implementar testes E2E
+
+💰 R$ 10k – R$ 15k | PJ | Pleno
+📍 Híbrido | São Paulo
+🛠️ Cypress, Playwright
+🔗 [link2]
+
+💡 invite=caroline.lima798
+```
+
+### RUIM - Hook Genérico (SEM IMPACTO)
 ```
 🚀 Fazer parte de um time incrível e colaborativo
 
@@ -102,7 +119,7 @@ Se entrada tiver apenas um valor:
 🛠️ .NET, C#, SQL Server
 ```
 
-### ❌ RUIM - Cargo como Hook
+### RUIM - Cargo como Hook
 ```
 🚀 Senior Backend Engineer
 
@@ -117,8 +134,10 @@ Se entrada tiver apenas um valor:
 - **PROIBIDO**: Usar separadores (---, ===, ___) ou rótulos (POST 1, VAGA 1)
 - **PROIBIDO**: Usar mais de 1 emoji por linha
 - **PROIBIDO**: Travessões (-)
+- **PROIBIDO**: Salário "a combinar" ou "à combinar"
 - **REGRA**: Use o hífen curto (-) para separadores e o en-dash (–) exclusivamente para faixas salariais.
 - **SEMPRE**: Faixa salarial explícita (nunca "a combinar")
+- **SEMPRE**: Gerar post mesmo se dados incompletos (inferir contexto)
 - **AVISAR**: Que gerou link com invite=caroline.lima798
 
 ## Validation
@@ -129,3 +148,4 @@ Se entrada tiver apenas um valor:
 - [ ] Emoji máximo 1 por linha?
 - [ ] AVISAR que gerou link com invite?
 - [ ] Sem separadores ou travessões?
+- [ ] Contrato (CLT/PJ) presente?
