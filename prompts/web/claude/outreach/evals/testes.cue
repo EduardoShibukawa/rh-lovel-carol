@@ -22,7 +22,7 @@ testesM1: [
     (#M1 & {
         id:     1
         prompt: "M1 para Luffy - Java Sr"
-        output: "Oi Luffy! Sou Carol da Lovel. Vi seu perfil e acredito que possa interessar: Java Backend Sr R$10k-13k. Está aberto a oportunidades?"
+        output: "Oi Luffy! Sou a Carol da Lovel. Vi seu perfil e acredito que possa interessar: Java Backend Sr R$10k-13k. Está aberto a oportunidades?"
     }),
     
     (#M1 & {

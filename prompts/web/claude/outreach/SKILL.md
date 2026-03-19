@@ -18,7 +18,7 @@ REGRAS OBRIGATÓRIAS:
 
 M1 (máx 200 caracteres):
 ```
-Oi [Nome]! Sou Carol da Lovel. Vi seu perfil e acredito que possa interessar: 
+Oi [Nome]! Sou a Carol da Lovel. Vi seu perfil e acredito que possa interessar: 
 [Vaga]. Está aberto a oportunidades?
 ```
 
