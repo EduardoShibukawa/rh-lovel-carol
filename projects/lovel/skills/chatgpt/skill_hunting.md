@@ -106,16 +106,19 @@
 
   🔍 STRINGS DE ELITE (Fidelidade Glen Cathey)
 
-  1. VOLUME (Abertura de Funil):
+  1. SALARY RANGE: 
+     [R$ Xk – R$ Yk] (Transparência Radical Lovel) - MANDATÓRIO
+
+  2. VOLUME (Abertura de Funil):
      [Query com todos os sinônimos + locality + exclusões]
 
-  2. MÉTODO (Foco em Outbound ou Engenharia):
+  3. MÉTODO (Foco em Outbound ou Engenharia):
      [Query associando cargos a conceitos: outbound, prospecção, ativa OR scalability, architecture]
 
-  3. ALTERNATIVE TITLES:
+  4. ALTERNATIVE TITLES:
      [Sinônimos reais do mercado que não usam o cargo padrão]
 
-  4. X-RAY (bypass LinkedIn):
+  5. X-RAY (bypass LinkedIn):
      [Query para buscar via Google]
 
   🚀 SOURCING STRATEGY (DNA Lovel)
