@@ -117,11 +117,22 @@ def extract_scores(text: str) -> Dict[str, Any]:
     import json
     import re
     
-    # Tentar extrair JSON
-    json_match = re.search(r'\{[^{}]*"scores"[^{}]*\}[^{}]*\}', text, re.DOTALL)
+    # Tentar extrair JSON do bloco de código
+    json_match = re.search(r'```json\s*(\{.*?\})\s*```', text, re.DOTALL)
     if json_match:
         try:
-            return json.loads(json_match.group())
+            data = json.loads(json_match.group(1))
+            return data
+        except json.JSONDecodeError:
+            pass
+    
+    # Tentar extrair qualquer JSON válido
+    json_match = re.search(r'\{[\s\S]*\}', text)
+    if json_match:
+        try:
+            data = json.loads(json_match.group())
+            if "scores" in data:
+                return data
         except json.JSONDecodeError:
             pass
     
