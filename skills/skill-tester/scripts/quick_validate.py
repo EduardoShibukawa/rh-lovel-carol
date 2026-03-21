@@ -15,7 +15,7 @@ import re
 from pathlib import Path
 from typing import List, Dict, Any
 
-SKILLS_ROOT = Path(__file__).parent.parent.parent
+SKILLS_ROOT = Path(__file__).parent.parent.parent.parent
 
 def validate_skill_structure(skill_path: Path) -> dict:
     """Valida estrutura básica de uma skill"""
@@ -26,7 +26,11 @@ def validate_skill_structure(skill_path: Path) -> dict:
     if skill_path.is_file():
         skill_md = skill_path
     else:
+        # Try SKILL.md (claude format) or skill_{name}.md (chatgpt format)
         skill_md = skill_path / "SKILL.md"
+        if not skill_md.exists():
+            skill_name = skill_path.name
+            skill_md = skill_path.parent / f"skill_{skill_name}.md"
     
     if not skill_md.exists():
         errors.append(f"Skill file not found: {skill_md}")
@@ -56,16 +60,17 @@ def validate_skill_structure(skill_path: Path) -> dict:
         if "<skill" not in content:
             errors.append("Falta tag <skill>")
     
+    has_evals = False
     if skill_path.is_dir():
         evals_dir = skill_path / "evals"
         if evals_dir.exists():
-            evals_file = evals_dir / "evals.json"
+            evals_file = evals_dir / "testes.cue"
             if evals_file.exists():
-                print(f"         📋 Evals found")
+                has_evals = True
             else:
-                warnings.append("Diretório evals sem evals.json")
+                warnings.append("Diretório evals sem testes.cue")
     
-    return {"valid": len(errors) == 0, "errors": errors, "warnings": warnings}
+    return {"valid": len(errors) == 0, "errors": errors, "warnings": warnings, "has_evals": has_evals}
 
 
 def find_all_skills() -> List[Dict[str, Any]]:
@@ -143,6 +148,9 @@ def main():
             
             print(f"   📁 {skill['platform']}/{skill['name']}...", end=" ")
             result = validate_skill_structure(skill["path"])
+            
+            if result.get("has_evals"):
+                print("📋", end=" ")
             
             if result["valid"]:
                 print("✅")

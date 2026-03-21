@@ -1,115 +1,143 @@
 # AGENTS.md - Lovel Tech Recruiting Prompt System
 
-This repository contains prompt engineering for a tech recruiting operation (Lovel/Carol Lima). It manages hunting, outreach, and posting prompts for multiple LLM platforms.
+This repository manages prompt engineering for a tech recruiting operation (Lovel/Carol Lima). It contains hunting, outreach, posting, and candidate evaluation prompts for multiple LLM platforms.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 rh-carol/
-├── AGENTS.md                           # This file
-├── prompts/
-│   └── web/
-│       ├── claude/                     # Claude.ai skills (YAML format)
-│       │   ├── hunting/SKILL.md        # Boolean query generation
-│       │   ├── outreach/SKILL.md       # DM personalization
-│       │   ├── post/SKILL.md           # LinkedIn posts
-│       │   ├── parecer/SKILL.md        # Candidate evaluation
-│       │   ├── authorities/            # Reference principles
-│       │   ├── system_prompt.md        # Main router
-│       │   └── tests/                  # Manual test fixtures
-│       └── chatgpt/                    # ChatGPT skills (XML format)
-│           ├── skills/
-│           └── evals/
-└── skills/
-    └── lovel-tester/                   # Testing infrastructure
-        └── scripts/                    # Automation scripts
+├── projects/lovel/skills/              # Main skills directory
+│   ├── claude/                         # Claude.ai skills (YAML format)
+│   │   ├── hunting/SKILL.md           # Boolean query generation
+│   │   ├── outreach/SKILL.md          # DM personalization
+│   │   ├── post/SKILL.md              # LinkedIn posts
+│   │   ├── parecer/SKILL.md           # Candidate evaluation
+│   │   └── */evals/testes.cue         # CUE fixtures for testing
+│   └── chatgpt/                        # ChatGPT skills (XML format)
+│       ├── skill_hunting.md
+│       ├── skill_outreach.md
+│       ├── skill_post.md
+│       ├── skill_parecer.md
+│       └── */evals/testes.cue
+├── skills/skill-tester/scripts/         # Testing infrastructure (Python)
+│   ├── quick_validate.py              # Structure validation
+│   ├── run_eval.py                    # CUE fixtures validator (legacy)
+│   ├── test_skill.py                  # LLM-based skill tester (NEW)
+│   ├── validate.py                    # CUE fixtures validator
+│   ├── assess.py                      # LLM-based quality assessment
+│   └── llm_client.py                  # OpenCode API client
+├── fixtures/                          # Test fixtures (PDFs, markdown)
+└── AGENTS.md                          # This file
 ```
 
 ---
 
-## 🚀 Opencode Integration
+## Build/Lint/Test Commands
 
-A skill `lovel-tester` está disponível no opencode global em `~/.opencode/skill/lovel-tester/`.
+### LLM Skill Tester (NEW - Recommended)
 
 ```bash
-# Chame no opencode com:
-/lovel-tester
+# Test single skill with LLM
+python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting
+
+# Test all skills for a project
+python skills/skill-tester/scripts/test_skill.py --project lovel
+
+# Verbose output with detailed checks
+python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting --verbose
+
+# Test specific skill across all projects
+python skills/skill-tester/scripts/test_skill.py --skill hunting
 ```
 
-Use para testar, validar e iterar nas skills do projeto.
+### CUE Fixtures Validator
 
-### Validation Scripts (Python)
+```bash
+# Validate specific fixture
+cue vet projects/lovel/skills/claude/hunting/evals/testes.cue
 
-All scripts are in `skills/lovel-tester/scripts/`:
+# Validate all fixtures (Python)
+python skills/skill-tester/scripts/validate.py --project lovel --skill hunting
+python skills/skill-tester/scripts/validate.py --all
+```
+
+### Quick Structure Validation
 
 ```bash
 # Validate all skills structure
-python skills/lovel-tester/scripts/quick_validate.py
+python skills/skill-tester/scripts/quick_validate.py
 
 # Validate specific skill
-python skills/lovel-tester/scripts/quick_validate.py hunting
+python skills/skill-tester/scripts/quick_validate.py --project lovel --skill hunting
 
 # Validate specific platform
-python skills/lovel-tester/scripts/quick_validate.py claude
-
-# Run evals for a skill
-python skills/lovel-tester/scripts/run_eval.py hunting
-python skills/lovel-tester/scripts/run_eval.py claude/hunting
-
-# Analyze and suggest improvements for a skill
-python skills/lovel-tester/scripts/improve_description.py hunting
-```
-
-### Manual Test Runner (Bash)
-
-```bash
-# From prompts/web/claude directory
-cd prompts/web/claude
-
-# Run test with fixture
-./tests/test_runner.sh hunting vagas_tech
-./tests/test_runner.sh outreach vaga_go
-./tests/test_runner.sh post vaga_bdr
-
-# List available fixtures
-ls tests/fixtures/
+python skills/skill-tester/scripts/quick_validate.py --platform claude
 ```
 
 ---
 
-## 📋 Code Style Guidelines
+## Test Workflow
+
+The `test_skill.py` script performs end-to-end prompt testing:
+
+1. **Load Skill Prompt** - Reads `SKILL.md` from the skill directory
+2. **Load Fixtures** - Reads test cases from `evals/testes.cue`
+3. **Call LLM** - Sends prompt + fixture input to OpenCode (Claude)
+4. **Grade Output** - Applies skill-specific grading criteria
+5. **Report** - Shows score (0-10), pass/fail, and detailed issues
+
+### Grading Criteria by Skill
+
+| Skill | Checks |
+|-------|--------|
+| **hunting** | No emoji, 5+ synonyms, X-Ray with site:linkedin.com/in, NOT exclusions, salary format |
+| **outreach** | M1 ≤200 chars, M2 with salary, max 1 emoji, follow-up day 4/7, invite |
+| **post** | Salary range, 90-day impact hook, invite, no em-dash |
+| **parecer** | Resumo, stack, pontos, recomendação |
+
+---
+
+## Code Style Guidelines
 
 ### Python Scripts
 
-**Imports**
+**Imports** (standard library preferred):
 ```python
+import argparse
 import json
-import sys
 import re
+import statistics
+import subprocess
+import sys
+import time
 from pathlib import Path
+from typing import Dict, List, Any, Optional
 ```
 
-**Type Hints**
+**Type Hints**:
 ```python
-def validate_skill_structure(skill_path: Path) -> dict:
-    """Docstring describing function."""
+def validate_skill_structure(skill_path: Path) -> dict[str, Any]:
+    """Validate skill structure and return results."""
 ```
 
-**Naming**
-- snake_case for functions/variables: `validate_skill_structure`
-- PascalCase for classes (if any)
-- Constants: UPPER_SNAKE_CASE
+**Naming Conventions**:
+- Functions/variables: `snake_case`
+- Classes: `PascalCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Type variables: `PascalCase` (e.g., `Dict`, `List`)
 
-**Error Handling**
+**Error Handling**:
 - Return dict with `{"valid": bool, "errors": [], "warnings": []}`
-- Use sys.exit(1) only for fatal CLI errors
-- Print emojis for status: ✅ ❌ ⚠️ 📋
+- Use `sys.exit(1)` only for fatal CLI errors
+- Print emojis for status: `✅` `❌` `⚠️` `📋`
 
-### Markdown Prompts (YAML/Claude format)
+---
 
-**Required Frontmatter**
+### Markdown Prompts (YAML/Claude Format)
+
+**Required Frontmatter**:
 ```yaml
 ---
 name: lovel-hunting
@@ -119,74 +147,59 @@ Não use para: What to avoid
 ---
 ```
 
-**Content Rules**
+**Content Rules**:
 - NO em-dashes (`—`) - use regular hyphens or en-dashes for ranges
-- NO corporate jargon ("dinâmico", "oportunidade incrível", "empresa líder", "perfil diferenciado")
-- LOVEL TONE: Conversational, direct, and human. Avoid "RHzês" and formalisms.
-- Salary always as range with en-dash: "R$ 10k – R$ 14k"
+- NO corporate jargon ("dinâmico", "oportunidade incrível", "empresa líder")
+- LOVEL TONE: Conversational, direct, human. Avoid "RHzês" and formalisms
+- Salary as range with en-dash: "R$ 10k – R$ 14k"
 - Keep paragraphs short (3-4 lines max)
 - Use numbered lists for steps
-- Include "## Examples" section
+- Include `## Examples` section
 
-### Markdown Prompts (XML/ChatGPT format)
+---
 
-```xml
-<skill>
-<name>skill_hunting</name>
-<description>Description here</description>
-<instructions>
-1. Step one
-2. Step two
-</instructions>
-<examples>
-### ✅ BOM
-Input: ...
-Output: ...
+### CUE Fixtures Format
 
-### ❌ RUIM
-Input: ...
-Output: ...
-</examples>
-</skill>
+Fixtures define test inputs for eval runner:
+
+```cue
+#HuntingTest: {
+    id:       int
+    prompt:   string
+    expected: {
+        techStack: string
+        level:     string
+        salary:    string
+        location:  string
+    }
+}
+
+testes: [
+    (#HuntingTest & {
+        id:     1
+        prompt: "Boolean para Dev Go Sr - R$15k-22k - remoto - Go, Kubernetes"
+        expected: {
+            techStack: "Go"
+            level:     "Senior"
+            salary:    "R$ 15k – R$ 22k"
+            location:  "Remoto"
+        }
+    }),
+]
 ```
 
 ---
 
-## 🧪 Test Criteria by Skill
+## Development Workflow
 
-### Hunting (Boolean Queries)
-- 5+ synonyms per tech term (MANDATORY)
-- X-Ray search (site:linkedin.com/in)
-- NOT exclusions for junior/intern
-- Location specificity
-- Emoji: ZERO (Hunting is a technical asset)
-
-### Outreach (DM Templates)
-- M1 max 200 characters
-- M2 with explicit salary range
-- Follow-up: Day 4 / Day 7
-- Invite parameter: `invite=caroline.lima798`
-- Emoji: Máximo 1 por mensagem (Strict)
-
-### Post (LinkedIn)
-- Hook with 90-day impact (not job title)
-- Explicit salary range
-- Max 4 jobs per post
-- No separators/em-dashes
-- Emoji: Máximo 1 por linha (ideal para bullet points)
-
----
-
-## 🔄 Development Workflow
-
-1. **Edit prompts** in `prompts/web/claude/` or `prompts/web/chatgpt/`
-2. **Validate structure**: `python skills/lovel-tester/scripts/quick_validate.py`
-3. **Run evals**: `python skills/lovel-tester/scripts/run_eval.py <skill>`
+1. **Edit prompts** in `projects/lovel/skills/claude/` or `projects/lovel/skills/chatgpt/`
+2. **Validate structure**: `python skills/skill-tester/scripts/quick_validate.py`
+3. **Test with LLM**: `python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting --verbose`
 4. **Iterate until 90%+ pass rate**
 
 ---
 
-## 📚 Authorities & References
+## Authorities & References
 
 | Authority | Principle |
 |-----------|-----------|
@@ -198,17 +211,17 @@ Output: ...
 
 ---
 
-## 📊 Project Metrics
+## Project Metrics
 
-| Skill | Pass Rate | Avg Score | Latency |
-|-------|-----------|-----------|---------|
-| hunting | 90% | 8.9/10 | 8.6s |
-| outreach | TBD | TBD | TBD |
-| post | TBD | TBD | TBD |
-| parecer | TBD | TBD | TBD |
+| Skill | Claude | ChatGPT | Avg Score |
+|-------|--------|---------|-----------|
+| hunting | 10.0 | 10.0 | **10.0** |
+| outreach | 10.0 | 10.0 | **10.0** |
+| post | 10.0 | 10.0 | **10.0** |
+| parecer | 10.0 | 10.0 | **10.0** |
 
-**Backend**: OpenCode (Claude 3.7 Sonnet) only - other backends not reliable for production.
+**Overall: 10.0/10** | **Backend**: OpenCode (Claude 3.7 Sonnet)
 
 ---
 
-**Last Updated**: 2026-03-18
+**Last Updated**: 2026-03-19

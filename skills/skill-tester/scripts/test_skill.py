@@ -1,0 +1,427 @@
+#!/usr/bin/env python3
+"""
+LLM Skill Tester - Testa prompts contra LLM.
+
+Usage:
+    python test_skill.py --project lovel --skill hunting
+    python test_skill.py --project lovel --skill hunting --verbose
+    python test_skill.py --project lovel --all
+"""
+
+import argparse
+import json
+import re
+import subprocess
+import sys
+import time
+import statistics
+from pathlib import Path
+from typing import Dict, List, Any, Optional
+
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
+
+try:
+    import requests
+except ImportError:
+    print("ERRO: requests não instalado")
+    sys.exit(1)
+
+COST_PER_1M_TOKENS = 3.0
+
+_config = {
+    "session_id": None,
+    "total_tokens": 0,
+    "total_cost": 0.0,
+}
+
+
+def reset_stats():
+    _config["total_tokens"] = 0
+    _config["total_cost"] = 0.0
+
+
+def call_llm(prompt: str) -> dict:
+    """Execute LLM call via OpenCode."""
+    try:
+        if _config.get("session_id") is None:
+            resp = requests.post(
+                "http://127.0.0.1:4096/session",
+                json={"title": "skill-test"},
+                timeout=10
+            )
+            _config["session_id"] = resp.json()["id"]
+        
+        session_id = _config["session_id"]
+        t0 = time.time()
+        
+        message_resp = requests.post(
+            f"http://127.0.0.1:4096/session/{session_id}/message",
+            json={"parts": [{"type": "text", "text": prompt}]},
+            timeout=120
+        )
+        
+        latency = int((time.time() - t0) * 1000)
+        
+        if message_resp.status_code != 200:
+            return {"error": message_resp.text, "output": "", "tokens": 0, "latency": latency}
+        
+        parts = message_resp.json().get("parts", [])
+        output = ""
+        for part in parts:
+            if part.get("type") == "text":
+                output = part.get("text", "")
+                break
+        
+        return {"output": output.strip(), "tokens": 0, "latency": latency, "error": None}
+    except Exception as e:
+        return {"error": str(e), "output": "", "tokens": 0, "latency": 0}
+
+
+def find_projects() -> List[str]:
+    projects_dir = ROOT / "projects"
+    if not projects_dir.exists():
+        return []
+    return [p.name for p in projects_dir.iterdir() if p.is_dir()]
+
+
+def find_skills(project: str) -> List[str]:
+    project_dir = ROOT / "projects" / project / "skills"
+    skills = []
+    if not project_dir.exists():
+        return skills
+    for platform in ["claude", "chatgpt"]:
+        platform_dir = project_dir / platform
+        if platform_dir.exists():
+            for item in platform_dir.iterdir():
+                if item.name.startswith("."):
+                    continue
+                if item.is_dir():
+                    skills.append(item.name)
+                elif item.suffix == ".md" and item.stem.startswith("skill_"):
+                    skills.append(item.stem.replace("skill_", ""))
+    return list(set(skills))
+
+
+def find_skill_prompt(project: str, skill: str) -> Optional[Dict[str, str]]:
+    project_dir = ROOT / "projects" / project / "skills"
+    results: Dict[str, str] = {}
+    for platform in ["claude", "chatgpt"]:
+        if platform == "claude":
+            skill_file = project_dir / platform / skill / "SKILL.md"
+        else:
+            skill_file = project_dir / platform / f"skill_{skill}.md"
+        if not skill_file.exists() and platform == "chatgpt":
+            skill_dir = project_dir / platform / skill
+            if skill_dir.is_dir():
+                skill_file = skill_dir / "SKILL.md"
+        if skill_file.exists():
+            results[platform] = skill_file.read_text()
+    return results if results else None
+
+
+def find_fixtures(project: str, skill: str) -> Optional[Path]:
+    project_dir = ROOT / "projects" / project / "skills"
+    for platform in ["claude", "chatgpt"]:
+        fixtures_file = project_dir / platform / skill / "evals" / "testes.cue"
+        if fixtures_file.exists():
+            return fixtures_file
+    return None
+
+
+def load_cue_fixtures(fixtures_file: Path) -> Dict[str, Any]:
+    try:
+        result = subprocess.run(
+            ["cue", "export", "--out", "json", str(fixtures_file)],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)
+        return {"error": result.stderr[:300]}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def grade_hunting(prompt: str, output: str) -> Dict[str, Any]:
+    issues = []
+    checks = {}
+    
+    has_emoji = bool(re.search(r"[\U0001F300-\U0001FAFF]", output))
+    checks["no_emoji"] = not has_emoji
+    if has_emoji:
+        issues.append("Contém emoji")
+    
+    for section in ["ICP", "Salary", "Query", "X-Ray", "NOT"]:
+        has_section = bool(re.search(rf"(?i)##\s*{section}", output))
+        checks[f"has_{section.lower()}"] = has_section
+        if not has_section:
+            issues.append(f"Falta ## {section}")
+    
+    has_linkedin = bool(re.search(r"site:linkedin.com/in", output))
+    checks["has_linkedin"] = has_linkedin
+    if not has_linkedin:
+        issues.append("X-Ray sem site:linkedin.com/in")
+    
+    salary_format = bool(re.search(r"R\$\s*\d+k?\s*[-–]\s*R\$\s*\d+k?", output))
+    checks["salary_format"] = salary_format
+    if not salary_format:
+        issues.append("Salary sem formato R$ Xk – R$ Yk")
+    
+    synonyms = re.findall(r'\(([^)]+)\)', output)
+    has_5plus = any(len([s.strip() for s in syn.split("OR") if s.strip()]) >= 5 for syn in synonyms)
+    checks["min_synonyms"] = has_5plus
+    if not has_5plus and synonyms:
+        issues.append("Nenhum grupo com 5+ sinônimos")
+    
+    passed = sum(1 for v in checks.values() if v)
+    score = round((passed / len(checks)) * 10, 1) if checks else 0
+    
+    return {"score": score, "passed": score >= 7.0, "checks": checks, "issues": issues}
+
+
+def grade_outreach(prompt: str, output: str) -> Dict[str, Any]:
+    issues = []
+    checks = {}
+    
+    prompt_upper = prompt.upper()
+    is_m1 = "M1" in prompt_upper or not any(x in prompt_upper for x in ["M2", "FOLLOW"])
+    is_m2 = "M2" in prompt_upper
+    is_followup = "FOLLOW" in prompt_upper or "DAY 4" in prompt_upper or "DAY 7" in prompt_upper
+    
+    if is_m1:
+        m1_text = re.sub(r"(?i)^M1:?\s*", "", output).strip()
+        checks["m1_200chars"] = len(m1_text) <= 200
+        if len(m1_text) > 200:
+            issues.append(f"M1 com {len(m1_text)} chars")
+    
+    if is_m2:
+        has_salary = bool(re.search(r"R\$\s*\d+k?\s*[-–]\s*R\$\s*\d+k?", output))
+        checks["salary_m2"] = has_salary
+        if not has_salary:
+            issues.append("M2 sem salary")
+        
+        has_invite = bool(re.search(r"invite=caroline\.lima798", output))
+        checks["has_invite"] = has_invite
+        if not has_invite:
+            issues.append("Falta invite")
+    
+    if is_followup:
+        has_followup = bool(re.search(r"(?i)(day\s*4|day\s*7)", output))
+        checks["has_followup"] = has_followup
+        if not has_followup:
+            issues.append("Falta follow-up day 4/7")
+    
+    emoji_count = len(re.findall(r"[\U0001F300-\U0001FAFF]", output))
+    checks["max_1_emoji"] = emoji_count <= 1
+    if emoji_count > 1:
+        issues.append(f"Muitos emojis ({emoji_count})")
+    
+    passed = sum(1 for v in checks.values() if v)
+    score = round((passed / len(checks)) * 10, 1) if checks else 0
+    
+    return {"score": score, "passed": score >= 7.0, "checks": checks, "issues": issues}
+
+
+def grade_post(prompt: str, output: str) -> Dict[str, Any]:
+    issues = []
+    checks = {}
+    
+    has_salary = bool(re.search(r"R\$\s*\d+k?\s*[-–]\s*R\$\s*\d+k?", output))
+    checks["has_salary"] = has_salary
+    if not has_salary:
+        issues.append("Post sem salary")
+    
+    has_90dias = bool(re.search(r"(?i)90\s*dias", output))
+    checks["has_90dias"] = has_90dias
+    if not has_90dias:
+        issues.append("Falta hook com 90 dias")
+    
+    has_invite = bool(re.search(r"invite=caroline\.lima798", output))
+    checks["has_invite"] = has_invite
+    if not has_invite:
+        issues.append("Falta invite")
+    
+    has_emdash = bool(re.search(r"—", output))
+    checks["no_emdash"] = not has_emdash
+    if has_emdash:
+        issues.append("Contém em-dash")
+    
+    passed = sum(1 for v in checks.values() if v)
+    score = round((passed / len(checks)) * 10, 1) if checks else 0
+    
+    return {"score": score, "passed": score >= 7.0, "checks": checks, "issues": issues}
+
+
+def grade_parecer(prompt: str, output: str) -> Dict[str, Any]:
+    issues = []
+    checks = {}
+    
+    has_resumo = bool(re.search(r"(?i)(resumo|perfil)", output))
+    checks["has_resumo"] = has_resumo
+    if not has_resumo:
+        issues.append("Falta resumo")
+    
+    has_stack = bool(re.search(r"(?i)(stack|tecnologias)", output))
+    checks["has_stack"] = has_stack
+    if not has_stack:
+        issues.append("Falta stack")
+    
+    has_pontos = bool(re.search(r"(?i)(pontos\s*(fortes|aten))", output))
+    checks["has_pontos"] = has_pontos
+    if not has_pontos:
+        issues.append("Falta pontos")
+    
+    has_recomendacao = bool(re.search(r"(?i)(recomend|avanc)", output))
+    checks["has_recomendacao"] = has_recomendacao
+    if not has_recomendacao:
+        issues.append("Falta recomendação")
+    
+    passed = sum(1 for v in checks.values() if v)
+    score = round((passed / len(checks)) * 10, 1) if checks else 0
+    
+    return {"score": score, "passed": score >= 7.0, "checks": checks, "issues": issues}
+
+
+GRADERS = {
+    "hunting": grade_hunting,
+    "outreach": grade_outreach,
+    "post": grade_post,
+    "parecer": grade_parecer,
+}
+
+
+def test_skill(project: str, skill: str, verbose: bool = False) -> Dict[str, Any]:
+    """Testa uma skill com LLM."""
+    _config["session_id"] = None
+    results = {"project": project, "skill": skill, "platforms": {}, "summary": {}}
+    
+    prompts = find_skill_prompt(project, skill)
+    if not prompts:
+        return {"error": f"Skill '{skill}' não encontrada"}
+    
+    fixtures = find_fixtures(project, skill)
+    if not fixtures:
+        return {"error": f"Fixtures não encontrados"}
+    
+    data = load_cue_fixtures(fixtures)
+    if "error" in data:
+        return {"error": data["error"]}
+    
+    testes = data.get("testes", [])
+    if not testes:
+        return {"error": "Nenhum teste"}
+    
+    grader = GRADERS.get(skill)
+    if not grader:
+        return {"error": f"Grader não implementado"}
+    
+    reset_stats()
+    
+    for platform, prompt_template in prompts.items():
+        platform_results = []
+        
+        if verbose:
+            print(f"\n  Platform: {platform}")
+        
+        for i, test in enumerate(testes):
+            test_id = test.get("id", i + 1)
+            test_input = test.get("prompt", "")
+            full_prompt = f"{prompt_template}\n\n---\n\nInput: {test_input}"
+            
+            if verbose:
+                print(f"    Test {test_id}...")
+            
+            start = time.time()
+            llm_resp = call_llm(full_prompt)
+            latency = int((time.time() - start) * 1000)
+            
+            if llm_resp.get("error"):
+                platform_results.append({
+                    "test_id": test_id, "passed": False, "score": 0,
+                    "error": llm_resp["error"], "latency_ms": latency
+                })
+                continue
+            
+            grading = grader(test_input, llm_resp["output"])
+            platform_results.append({
+                "test_id": test_id,
+                "passed": grading["passed"],
+                "score": grading["score"],
+                "latency_ms": latency,
+                "issues": grading["issues"]
+            })
+        
+        scores = [r["score"] for r in platform_results if "score" in r]
+        passed = sum(1 for r in platform_results if r.get("passed"))
+        total = len(platform_results)
+        
+        results["platforms"][platform] = {
+            "results": platform_results,
+            "avg_score": round(statistics.mean(scores), 1) if scores else 0,
+            "pass_rate": f"{passed}/{total}",
+            "latency_ms": sum(r.get("latency_ms", 0) for r in platform_results)
+        }
+    
+    all_scores = [r["avg_score"] for r in results["platforms"].values()]
+    results["summary"] = {
+        "avg_score": round(statistics.mean(all_scores), 1) if all_scores else 0,
+        "pass_rate": f"{sum(int(r['pass_rate'].split('/')[0]) for r in results['platforms'].values())}/{sum(int(r['pass_rate'].split('/')[1]) for r in results['platforms'].values())}"
+    }
+    
+    return results
+
+
+def main():
+    parser = argparse.ArgumentParser(description="LLM Skill Tester")
+    parser.add_argument("--project", "-p", help="Nome do projeto")
+    parser.add_argument("--skill", "-s", help="Nome da skill")
+    parser.add_argument("--all", "-a", action="store_true", help="Rodar todos")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Output detalhado")
+    args = parser.parse_args()
+    
+    if args.all:
+        for project in find_projects():
+            skills = find_skills(project)
+            for skill in skills:
+                result = test_skill(project, skill, args.verbose)
+                if "error" in result:
+                    print(f"❌ {skill}: {result['error']}")
+                else:
+                    print(f"\n🎯 {skill}: {result['summary']['avg_score']}/10 | {result['summary']['pass_rate']}")
+                    if args.verbose:
+                        for platform, data in result["platforms"].items():
+                            print(f"  {platform}: {data['avg_score']}/10")
+    
+    elif args.project and args.skill:
+        result = test_skill(args.project, args.skill, args.verbose)
+        if "error" in result:
+            print(f"❌ Erro: {result['error']}")
+        else:
+            print(f"\n🎯 {result['skill']}")
+            print("=" * 50)
+            for platform, data in result["platforms"].items():
+                print(f"\n🔵 {platform.upper()}")
+                print(f"   Score: {data['avg_score']}/10 | Pass: {data['pass_rate']}")
+                if args.verbose:
+                    for r in data["results"]:
+                        status = "✅" if r["passed"] else "❌"
+                        print(f"   {status} Test {r['test_id']}: {r['score']}/10")
+                        for issue in r.get("issues", []):
+                            print(f"      ⚠️  {issue}")
+            print(f"\n📊 TOTAL: {result['summary']['avg_score']}/10")
+    
+    elif args.skill:
+        for project in find_projects():
+            if args.skill in find_skills(project):
+                result = test_skill(project, args.skill, args.verbose)
+                if "error" not in result:
+                    print(f"\n🎯 {result['skill']} ({project}): {result['summary']['avg_score']}/10")
+                    break
+    else:
+        print("Usage:")
+        print("  python test_skill.py --project lovel --skill hunting [--verbose]")
+        print("  python test_skill.py --skill hunting")
+        print("  python test_skill.py --all")
+
+
+if __name__ == "__main__":
+    main()
