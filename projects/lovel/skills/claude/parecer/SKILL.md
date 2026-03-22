@@ -100,13 +100,13 @@ Pontos fortes
 
 Pontos de atenção
 - Salary pode estar acima da faixa
-- Disponibilidade para modelo hibrido
+- Disponibilidade para modelo híbrido
 
 Recomendação
 [OK] Recomendo avançar para entrevista técnica, para validar:
 - Detalhes de arquitetura de pagamentos
 - Experiência com escalabilidade
-- Disponibilidade para trabalho hibrido
+- Disponibilidade para trabalho híbrido
 ```
 
 ### Exemplo 2: Perfil Borderline

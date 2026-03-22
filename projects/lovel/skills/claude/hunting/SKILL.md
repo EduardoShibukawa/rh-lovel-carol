@@ -101,11 +101,11 @@ NOT (junior OR jr OR trainee OR estagio OR estágio OR aprendiz OR estágiario)
 
 ## EXEMPLO 3: Sem salary (estimar)
 
-**Input:** "DevOps AWS experiencia em infraestrutura"
+**Input:** "DevOps AWS experiencia em infraestrutura - remoto"
 
 ```
 ## ICP
-DevOps Engineer com AWS para trabalho hibrido em Sao Paulo.
+DevOps Engineer com AWS e Terraform para trabalho remoto no Brasil.
 
 ## Salary
 R$ 12k – R$ 18k
@@ -114,11 +114,11 @@ R$ 12k – R$ 18k
 ("DevOps" OR "DevOps Engineer" OR "SRE" OR "Site Reliability" OR "Cloud Engineer" OR "Infrastructure Engineer")
 AND ("AWS" OR "Amazon Web Services" OR "Amazon AWS" OR "AWS cloud" OR "EC2" OR "S3" OR "Lambda" OR "cloud AWS")
 AND ("Terraform" OR "Ansible" OR "Pulumi" OR "CloudFormation" OR "IaC")
-AND ("São Paulo" OR "SP" OR "Região Sudeste" OR "Brasil")
+AND ("Remoto" OR "Remote" OR "Home office" OR "Anywhere" OR "Brasil" OR "Brazil")
 NOT (junior OR jr OR trainee OR estagio OR estágio OR aprendiz OR estágiario)
 
 ## X-Ray
-site:linkedin.com/in "DevOps" "AWS" "Terraform" "São Paulo"
+site:linkedin.com/in "DevOps" "AWS" "Terraform" "Remote"
 
 ## NOT
 NOT (junior OR jr OR trainee OR estagio OR estágio OR aprendiz OR estágiario)

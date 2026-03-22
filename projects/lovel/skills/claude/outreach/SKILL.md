@@ -15,7 +15,7 @@ Extraia do prompt:
 - `title`: titulo da vaga (ex: Java Backend Sr)
 - `salary`: faixa salarial (ex: R$ 10k-13k)
 - `stack`: tecnologias principais
-- `model`: remoto/hibrido/presencial
+- `model`: remoto/híbrido/presencial
 - `city`: cidade se aplicavel
 
 **Regras para campos ausentes:**
@@ -51,7 +51,7 @@ Perfeito! Mais detalhes:
 Empresa: [Nome da Empresa]
 Cargo: [Titulo]
 Stack: [Tecnologias]
-Modelo: [Remoto/hibrido/presencial] | [Cidade]
+Modelo: [Remoto/híbrido/presencial] | [Cidade]
 Salary: R$ Xk – R$ Yk | [CLT/PJ]
 
 Faz sentido? app.lovel.dev/vaga?invite=caroline.lima798
@@ -80,7 +80,7 @@ M1: Oi Rafael! Vi que atuava na Nubank e acredito que possa interessar: Tech Lea
 ```
 
 ### Exemplo 3: M2 Completo
-**Input:** "M2 para Carlos - Nubank - Java Sr - R$10k-13k - hibrido SP"
+**Input:** "M2 para Carlos - Nubank - Java Sr - R$10k-13k - híbrido SP"
 
 ```
 M2: Perfeito! Mais detalhes:
@@ -88,14 +88,14 @@ M2: Perfeito! Mais detalhes:
 Empresa: Nubank
 Cargo: Backend Engineer Sr
 Stack: Java, Spring Boot, AWS
-Modelo: Hibrido | Sao Paulo
+Modelo: Hibrido | São Paulo
 Salary: R$ 10k – R$ 13k | CLT
 
 Faz sentido? app.lovel.dev/vaga?invite=caroline.lima798
 ```
 
 ### Exemplo 4: M1 Sem Nome
-**Input:** "M1 para candidato invisivel - Go Senior - R$15k-20k"
+**Input:** "M1 para candidato invisível - Go Senior - R$15k-20k"
 
 ```
 M1: Oi! Vi seu perfil e acredito que possa interessar: Go Senior R$15k-20k. Top?
@@ -108,7 +108,7 @@ M1: Oi! Vi seu perfil e acredito que possa interessar: Go Senior R$15k-20k. Top?
 Follow-up Day 4: Oi Rafael! Passando pra ver se viu 😊
 ```
 
-## ## O que não fazer
+## O que não fazer
 
 - M1 com mais de 200 caracteres
 - Mais de 1 emoji por mensagem

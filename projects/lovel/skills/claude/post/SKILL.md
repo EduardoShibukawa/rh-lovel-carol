@@ -13,7 +13,7 @@ Não use para: escrever outreach, criar boolean queries, analisar CVs."
 Extraia do prompt:
 - `title`: titulo da vaga
 - `salary`: faixa salarial (ex: R$ 15k-22k)
-- `model`: remoto/hibrido/presencial
+- `model`: remoto/híbrido/presencial
 - `city`: cidade
 - `stack`: tecnologias principais
 - `metrics`: metricas de impacto se disponivel
@@ -46,8 +46,8 @@ Construir plataforma de fintech do zero em 90 dias
 
 ### Tipo 3: Oportunidade de Impacto
 ```
-Impactar milhoes de usuários em 90 dias
-Resolver dividas técnicas de sistema crítico em 90 dias
+Impactar milhões de usuários em 90 dias
+Resolver dívidas técnicas de sistema crítico em 90 dias
 Construir time de elite em 90 dias
 ```
 
