@@ -75,6 +75,40 @@ def _get_opencode_session() -> str:
     return _config["session_id"]
 
 
+def _start_opencode_server() -> bool:
+    """Start OpenCode server in background."""
+    import subprocess
+    import shutil
+    
+    print("🔄 Iniciando servidor OpenCode...")
+    try:
+        # Try to find opencode command
+        opencode_cmd = shutil.which("opencode")
+        if not opencode_cmd:
+            print("❌ opencode não encontrado no PATH")
+            return False
+        
+        subprocess.Popen(
+            [opencode_cmd, "serve"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        # Wait for server to be ready
+        for _ in range(30):
+            time.sleep(1)
+            try:
+                requests.get("http://127.0.0.1:4096/health", timeout=1)
+                print("✅ Servidor OpenCode iniciado!")
+                return True
+            except:
+                continue
+        return False
+    except Exception as e:
+        print(f"❌ Erro ao iniciar: {e}")
+        return False
+
+
 def _call_llm_opencode(prompt: str, system_prompt: str = "") -> dict:
     """Execute LLM call via OpenCode REST API."""
     full_prompt = (
@@ -105,6 +139,10 @@ def _call_llm_opencode(prompt: str, system_prompt: str = "") -> dict:
         
         return {"output": output.strip(), "tokens": 0, "latency": latency, "error": None}
     except requests.exceptions.ConnectionError:
+        # Try to start the server
+        if _start_opencode_server():
+            # Retry the call
+            return _call_llm_opencode(prompt, system_prompt)
         return {"error": "OPENCODE_SERVER_NOT_RUNNING", "output": "", "tokens": 0, "latency": 0}
     except Exception as e:
         return {"error": str(e), "output": "", "tokens": 0, "latency": 0}
