@@ -2,10 +2,16 @@
 """
 LLM Skill Tester - Testa prompts contra LLM.
 
+Roda dois tipos de teste:
+1. DETERMINISTICO - Verifica patterns (emojis, salary, estrutura)
+2. QUALITATIVO - LLM julga qualidade do prompt
+
 Usage:
     python test_skill.py --project lovel --skill hunting
     python test_skill.py --project lovel --skill hunting --verbose
+    python test_skill.py --project lovel --skill hunting --assess
     python test_skill.py --project lovel --all
+    python test_skill.py --project lovel --all --assess
 """
 
 import argparse
@@ -371,11 +377,14 @@ def test_skill(project: str, skill: str, verbose: bool = False) -> Dict[str, Any
 
 
 def main():
+    _config["session_id"] = None  # Reset session
+    
     parser = argparse.ArgumentParser(description="LLM Skill Tester")
     parser.add_argument("--project", "-p", help="Nome do projeto")
     parser.add_argument("--skill", "-s", help="Nome da skill")
     parser.add_argument("--all", "-a", action="store_true", help="Rodar todos")
     parser.add_argument("--verbose", "-v", action="store_true", help="Output detalhado")
+    parser.add_argument("--assess", action="store_true", help="Incluir avaliacao qualitativa")
     args = parser.parse_args()
     
     if args.all:
@@ -392,22 +401,26 @@ def main():
                             print(f"  {platform}: {data['avg_score']}/10")
     
     elif args.project and args.skill:
-        result = test_skill(args.project, args.skill, args.verbose)
-        if "error" in result:
-            print(f"❌ Erro: {result['error']}")
+        if args.assess:
+            result = assess_quality(args.project, args.skill, args.verbose)
+            print_full_report(result, args.skill)
         else:
-            print(f"\n🎯 {result['skill']}")
-            print("=" * 50)
-            for platform, data in result["platforms"].items():
-                print(f"\n🔵 {platform.upper()}")
-                print(f"   Score: {data['avg_score']}/10 | Pass: {data['pass_rate']}")
-                if args.verbose:
-                    for r in data["results"]:
-                        status = "✅" if r["passed"] else "❌"
-                        print(f"   {status} Test {r['test_id']}: {r['score']}/10")
-                        for issue in r.get("issues", []):
-                            print(f"      ⚠️  {issue}")
-            print(f"\n📊 TOTAL: {result['summary']['avg_score']}/10")
+            result = test_skill(args.project, args.skill, args.verbose)
+            if "error" in result:
+                print(f"❌ Erro: {result['error']}")
+            else:
+                print(f"\n🎯 {result['skill']}")
+                print("=" * 50)
+                for platform, data in result["platforms"].items():
+                    print(f"\n🔵 {platform.upper()}")
+                    print(f"   Score: {data['avg_score']}/10 | Pass: {data['pass_rate']}")
+                    if args.verbose:
+                        for r in data["results"]:
+                            status = "✅" if r["passed"] else "❌"
+                            print(f"   {status} Test {r['test_id']}: {r['score']}/10")
+                            for issue in r.get("issues", []):
+                                print(f"      ⚠️  {issue}")
+                print(f"\n📊 TOTAL: {result['summary']['avg_score']}/10")
     
     elif args.skill:
         for project in find_projects():
@@ -418,10 +431,195 @@ def main():
                     break
     else:
         print("Usage:")
-        print("  python test_skill.py --project lovel --skill hunting [--verbose]")
+        print("  python test_skill.py --project lovel --skill hunting [--verbose] [--assess]")
         print("  python test_skill.py --skill hunting")
         print("  python test_skill.py --all")
 
 
+# =============================================================================
+# QUALITATIVE ASSESSMENT (Avaliacao qualitativa via LLM)
+# =============================================================================
+
+QUALITY_PROMPT = """Você é um evaluator especialista em prompts de recruiting tech.
+
+Avalie o prompt abaixo em 5 contextos importantes para recruiting tech:
+
+1. CLAREZA - As instruções são claras e objetivas?
+2. EXEMPLOS - Os exemplos são bons e representativos?
+3. TOM - O tom está adequado (humano, direto, não formal)?
+4. ESTRUTURA - A estrutura está lógica e fácil de seguir?
+5. COMPLETUDE - Tem todas as informações necessárias?
+
+Retorne o resultado no formato JSON abaixo (sem outros texto):
+{{"json}}
+{{"scores": {{"clareza": "<1-10>", "exemplos": "<1-10>", "tom": "<1-10>", "estrutura": "<1-10>", "completude": "<1-10>"}}, "media": "<media>", "issues": ["issue"], "suggestions": ["sugestao"], "overall": "Excelente|Bom|Razoavel|Precisa melhorar"}}
+{{"json"}}
+
+---
+
+PROMPT A EVALUAR:
+{prompt}
+"""
+
+
+def find_skill_content(project: str, skill: str, platform: str | None = None) -> Optional[Dict[str, Any]]:
+    """Encontra conteúdo de uma skill."""
+    project_dir = ROOT / "projects" / project / "skills"
+    
+    platforms: List[str] = [platform] if platform else ["claude", "chatgpt"]
+    
+    for plat in platforms:
+        skill_md = project_dir / plat / skill / "SKILL.md"
+        if skill_md.exists():
+            return {"platform": plat, "path": skill_md, "content": skill_md.read_text()}
+        
+        skill_file = project_dir / plat / f"skill_{skill}.md"
+        if skill_file.exists():
+            return {"platform": plat, "path": skill_file, "content": skill_file.read_text()}
+    
+    return None
+
+
+def extract_scores(text: str) -> Dict[str, Any]:
+    """Extrai scores do texto de resposta do LLM."""
+    import json
+    import re
+    
+    json_match = re.search(r'```json\s*(\{.*?\})\s*```', text, re.DOTALL)
+    if json_match:
+        try:
+            return json.loads(json_match.group(1))
+        except json.JSONDecodeError:
+            pass
+    
+    json_match = re.search(r'\{[\s\S]*\}', text)
+    if json_match:
+        try:
+            data = json.loads(json_match.group())
+            if "scores" in data:
+                return data
+        except json.JSONDecodeError:
+            pass
+    
+    return {}
+
+
+def assess_quality(project: str, skill: str, verbose: bool = False) -> Dict[str, Any]:
+    """Avalia qualidade qualitativa de uma skill via LLM."""
+    result = {"deterministic": None, "qualitative": {}}
+    
+    # 1. DETERMINISTIC - ja feito em test_skill()
+    det_result = test_skill(project, skill, False)
+    result["deterministic"] = det_result
+    
+    # 2. QUALITATIVE - avaliar cada platform
+    for plat in ["claude", "chatgpt"]:
+        content = find_skill_content(project, skill, plat)
+        if not content:
+            continue
+        
+        prompt = QUALITY_PROMPT.format(prompt=content["content"])
+        llm_resp = call_llm(prompt)
+        
+        scores = extract_scores(llm_resp.get("output", ""))
+        result["qualitative"][plat] = {
+            "scores": scores,
+            "raw": llm_resp.get("output", "")[:500] if verbose else ""
+        }
+    
+    return result
+
+
+def print_full_report(result: Dict[str, Any], skill: str) -> None:
+    """Imprime relatório completo."""
+    print(f"\n{'='*60}")
+    print(f"🎯 {skill.upper()}")
+    print("=" * 60)
+    
+    # Deterministic results
+    if result.get("deterministic"):
+        det = result["deterministic"]
+        if "error" not in det:
+            print("\n📋 TESTE DETERMINISTICO (patterns)")
+            print("-" * 40)
+            for plat, data in det.get("platforms", {}).items():
+                emoji = "✅" if data["avg_score"] >= 7 else "⚠️" if data["avg_score"] >= 5 else "❌"
+                print(f"   {emoji} {plat.upper()}: {data['avg_score']}/10 ({data['pass_rate']})")
+            
+            total = det.get("summary", {}).get("avg_score", 0)
+            print(f"\n   📊 MEDIA DETERMINISTICA: {total}/10")
+    
+    # Qualitative results
+    if result.get("qualitative"):
+        print("\n📋 AVALIACAO QUALITATIVA (LLM judge)")
+        print("-" * 40)
+        
+        all_media = []
+        for plat, data in result["qualitative"].items():
+            scores = data.get("scores", {})
+            media = scores.get("media", 0)
+            overall = scores.get("overall", "N/A")
+            all_media.append(media)
+            
+            print(f"\n   🔵 {plat.upper()}")
+            print(f"   📈 Media: {media:.1f}/10 - {overall}")
+            
+            if scores.get("scores"):
+                for criterion, score in scores["scores"].items():
+                    if criterion not in ["media", "overall"]:
+                        e = "✅" if score >= 7 else "⚠️" if score >= 5 else "❌"
+                        print(f"      {e} {criterion}: {score}/10")
+            
+            if scores.get("issues"):
+                print(f"   🔴 Issues:")
+                for issue in scores["issues"][:3]:
+                    print(f"      - {issue[:80]}")
+            
+            if scores.get("suggestions"):
+                print(f"   💡 Sugestoes:")
+                for sug in scores["suggestions"][:3]:
+                    print(f"      - {sug[:80]}")
+        
+        if all_media:
+            print(f"\n   📊 MEDIA QUALITATIVA: {sum(all_media)/len(all_media):.1f}/10")
+    
+    # Combined score
+    if result.get("deterministic") and result.get("qualitative"):
+        det_avg = result["deterministic"].get("summary", {}).get("avg_score", 0)
+        qual_avg = sum(q.get("scores", {}).get("media", 0) for q in result["qualitative"].values()) / len(result["qualitative"])
+        combined = (det_avg + qual_avg) / 2
+        print(f"\n{'='*60}")
+        print(f"📊 COMBINED SCORE: {combined:.1f}/10")
+        print(f"   (Deterministic: {det_avg:.1f} + Qualitative: {qual_avg:.1f}) / 2")
+        print("=" * 60)
+
+
+def main_assess():
+    """Main para avaliacao qualitativa."""
+    import argparse
+    parser = argparse.ArgumentParser(description="Skill Quality Assessor")
+    parser.add_argument("--project", "-p", default="lovel", help="Nome do projeto")
+    parser.add_argument("--skill", "-s", help="Nome da skill")
+    parser.add_argument("--all", "-a", action="store_true", help="Todas as skills")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Output completo")
+    args = parser.parse_args()
+    
+    if args.all:
+        for skill in ["hunting", "outreach", "post", "parecer"]:
+            result = assess_quality(args.project, skill, args.verbose)
+            print_full_report(result, skill)
+    elif args.skill:
+        result = assess_quality(args.project, args.skill, args.verbose)
+        print_full_report(result, args.skill)
+    else:
+        print("Usage:")
+        print("  python test_skill.py --skill hunting --assess")
+        print("  python test_skill.py --all --assess")
+
+
 if __name__ == "__main__":
-    main()
+    if "--assess" in sys.argv:
+        sys.argv = [a for a in sys.argv if a != "--assess"]
+        main_assess()
+    else:
+        main()

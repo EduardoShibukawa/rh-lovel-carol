@@ -1,6 +1,88 @@
 # AGENTS.md - Lovel Tech Recruiting Prompt System
 
-This repository manages prompt engineering for a tech recruiting operation (Lovel/Carol Lima). It contains hunting, outreach, posting, and candidate evaluation prompts for multiple LLM platforms.
+This repository manages prompt engineering for a tech recruiting operation. It contains hunting, outreach, posting, and candidate evaluation prompts for multiple LLM platforms.
+
+---
+
+## Autoridades em Prompt Engineering
+
+### Core Authorities
+
+| Authority | Princípio | Fonte |
+|-----------|------------|-------|
+| **Anthropic** | XML tags para estrutura (15-20% melhor), few-shot examples, context engineering | anthropic.com |
+| **OpenAI** | 6 estratégias: instruções claras, referência, decomposição, exemplos, CoT, avaliação | platform.openai.com |
+| **PE Collective** | Priority stack, estrutura: identity, rules, format, edge cases, examples | pecollective.com |
+| **Field Guide to AI** | 6 camadas: identity, context, instructions, format, edge cases, defensive | fieldguidetoai.com |
+| **Azure/Microsoft** | Be specific, be descriptive, order matters | docs.microsoft.com |
+
+### Recruiting Authorities
+
+| Authority | Princípio | Fonte |
+|-----------|-----------|-------|
+| **Lou Adler** | Performance-based Hiring, impacto de 90 dias | louadler.com |
+| **Stacy Zapar** | 3x3 Rule, cadência de outreach | stacyzapar.com |
+| **Glen Cathey** | Boolean Black Belt | booleanblackbelt.com |
+| **Aaron Ross** | Predictable Revenue | predictablerevenue.com |
+| **Gergely Orosz** | Pragmatic Engineer, tech challenges | newsletter.pragmaticengineer.com |
+
+---
+
+## Princípios de Prompt Engineering (Baseado em Pesquisa)
+
+### 1. Estrutura P-TFC
+
+```
+P - Prompt (instruções)
+T - Task (tarefa)
+F - Format (formato de saída)
+C - Constraints (regras/restrições)
+```
+
+### 2. Few-Shot > Muitas Instruções
+
+Exemplos mostram melhor que explicações:
+- 2-4 exemplos (1 normal, 1 edge case)
+- Mostram comportamento esperado
+
+### 3. Priority Stack
+
+Quando regras conflitam, definir prioridade:
+```
+Priority 1 (never violate): Safety, compliance
+Priority 2 (strong preference): Accuracy
+Priority 3 (default): Tone, format
+```
+
+### 4. XML Tags para Claude
+
+```xml
+<prompt>
+  <role>Você é um recruiter...</role>
+  <task>Gerar boolean query...</task>
+  <format>
+    ## ICP
+    ...
+  </format>
+  <constraints>
+    - Zero emojis
+    - 5+ sinônimos
+  </constraints>
+  <examples>
+    <example id="1">
+      <input>...</input>
+      <output>...</output>
+    </example>
+  </examples>
+</prompt>
+```
+
+### 5. Edge Cases Explícitos
+
+Sempre incluir:
+- O que fazer quando info está ausente
+- O que fazer quando ambiguous
+- Fallback behavior
 
 ---
 
@@ -8,94 +90,51 @@ This repository manages prompt engineering for a tech recruiting operation (Love
 
 ```
 rh-carol/
-├── projects/lovel/skills/              # Main skills directory
-│   ├── claude/                         # Claude.ai skills (YAML format)
-│   │   ├── hunting/SKILL.md           # Boolean query generation
-│   │   ├── outreach/SKILL.md          # DM personalization
-│   │   ├── post/SKILL.md              # LinkedIn posts
-│   │   ├── parecer/SKILL.md           # Candidate evaluation
-│   │   └── */evals/testes.cue         # CUE fixtures for testing
-│   └── chatgpt/                        # ChatGPT skills (XML format)
-│       ├── skill_hunting.md
-│       ├── skill_outreach.md
-│       ├── skill_post.md
-│       ├── skill_parecer.md
-│       └── */evals/testes.cue
-├── skills/skill-tester/scripts/         # Testing infrastructure (Python)
-│   ├── quick_validate.py              # Structure validation
-│   ├── run_eval.py                    # CUE fixtures validator (legacy)
-│   ├── test_skill.py                  # LLM-based skill tester (NEW)
-│   ├── validate.py                    # CUE fixtures validator
-│   ├── assess.py                      # LLM-based quality assessment
-│   └── llm_client.py                  # OpenCode API client
-├── fixtures/                          # Test fixtures (PDFs, markdown)
-└── AGENTS.md                          # This file
+├── projects/
+│   └── lovel/
+│       └── skills/
+│           ├── claude/                     # Skills (YAML format)
+│           │   ├── hunting/SKILL.md
+│           │   ├── outreach/SKILL.md
+│           │   ├── post/SKILL.md
+│           │   ├── parecer/SKILL.md
+│           │   └── */evals/testes.cue
+│           └── chatgpt/                   # Skills (XML format)
+│               └── skill_*.md
+├── skills/
+│   └── skill-tester/                     # Testing infrastructure
+│       └── scripts/
+│           ├── test.py                    # Deterministic + Subjective
+│           ├── validate.py                 # CUE validation
+│           ├── assess.py                  # LLM assessment
+│           └── llm_client.py
+└── fixtures/                            # Test fixtures
 ```
 
 ---
 
 ## Build/Lint/Test Commands
 
-### LLM Skill Tester (NEW - Recommended)
+### Testing (Recommended)
 
 ```bash
-# Test single skill with LLM
-python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting
+# Combined: deterministic + subjective
+python skills/skill-tester/scripts/test.py --project lovel --skill hunting
+python skills/skill-tester/scripts/test.py --project lovel
 
-# Test all skills for a project
-python skills/skill-tester/scripts/test_skill.py --project lovel
+# Deterministic only (CUE fixtures)
+python skills/skill-tester/scripts/validate.py --project lovel
 
-# Verbose output with detailed checks
-python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting --verbose
-
-# Test specific skill across all projects
-python skills/skill-tester/scripts/test_skill.py --skill hunting
+# Subjective only (LLM assessment)
+python skills/skill-tester/scripts/assess.py --project lovel
 ```
 
-### CUE Fixtures Validator
+### Legacy Commands
 
 ```bash
-# Validate specific fixture
-cue vet projects/lovel/skills/claude/hunting/evals/testes.cue
-
-# Validate all fixtures (Python)
-python skills/skill-tester/scripts/validate.py --project lovel --skill hunting
-python skills/skill-tester/scripts/validate.py --all
-```
-
-### Quick Structure Validation
-
-```bash
-# Validate all skills structure
 python skills/skill-tester/scripts/quick_validate.py
-
-# Validate specific skill
-python skills/skill-tester/scripts/quick_validate.py --project lovel --skill hunting
-
-# Validate specific platform
-python skills/skill-tester/scripts/quick_validate.py --platform claude
+python skills/skill-tester/scripts/run_eval.py hunting
 ```
-
----
-
-## Test Workflow
-
-The `test_skill.py` script performs end-to-end prompt testing:
-
-1. **Load Skill Prompt** - Reads `SKILL.md` from the skill directory
-2. **Load Fixtures** - Reads test cases from `evals/testes.cue`
-3. **Call LLM** - Sends prompt + fixture input to OpenCode (Claude)
-4. **Grade Output** - Applies skill-specific grading criteria
-5. **Report** - Shows score (0-10), pass/fail, and detailed issues
-
-### Grading Criteria by Skill
-
-| Skill | Checks |
-|-------|--------|
-| **hunting** | No emoji, 5+ synonyms, X-Ray with site:linkedin.com/in, NOT exclusions, salary format |
-| **outreach** | M1 ≤200 chars, M2 with salary, max 1 emoji, follow-up day 4/7, invite |
-| **post** | Salary range, 90-day impact hook, invite, no em-dash |
-| **parecer** | Resumo, stack, pontos, recomendação |
 
 ---
 
@@ -103,125 +142,105 @@ The `test_skill.py` script performs end-to-end prompt testing:
 
 ### Python Scripts
 
-**Imports** (standard library preferred):
+**Imports (stdlib only):**
 ```python
 import argparse
 import json
 import re
-import statistics
-import subprocess
 import sys
-import time
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 ```
 
-**Type Hints**:
+**Type Hints:**
 ```python
-def validate_skill_structure(skill_path: Path) -> dict[str, Any]:
-    """Validate skill structure and return results."""
+def validate_skill(skill_path: Path) -> dict[str, Any]:
+    """Docstring describing function."""
 ```
 
-**Naming Conventions**:
-- Functions/variables: `snake_case`
-- Classes: `PascalCase`
-- Constants: `UPPER_SNAKE_CASE`
-- Type variables: `PascalCase` (e.g., `Dict`, `List`)
+**Naming:**
+- snake_case: functions, variables
+- PascalCase: classes
+- UPPER_SNAKE_CASE: constants
 
-**Error Handling**:
-- Return dict with `{"valid": bool, "errors": [], "warnings": []}`
-- Use `sys.exit(1)` only for fatal CLI errors
-- Print emojis for status: `✅` `❌` `⚠️` `📋`
+**Error Handling:**
+- Return `{"valid": bool, "errors": [], "warnings": []}`
+- sys.exit(1) only for fatal CLI errors
 
----
+### Markdown Prompts (Claude/YAML format)
 
-### Markdown Prompts (YAML/Claude Format)
-
-**Required Frontmatter**:
+**Frontmatter:**
 ```yaml
 ---
 name: lovel-hunting
-description: "A short description for triggering (50+ chars)"
+description: "Boolean queries, X-Ray search, sourcing ativo..."
 Use para: Contexts where this skill applies
 Não use para: What to avoid
 ---
 ```
 
-**Content Rules**:
-- NO em-dashes (`—`) - use regular hyphens or en-dashes for ranges
-- NO corporate jargon ("dinâmico", "oportunidade incrível", "empresa líder")
-- LOVEL TONE: Conversational, direct, human. Avoid "RHzês" and formalisms
-- Salary as range with en-dash: "R$ 10k – R$ 14k"
-- Keep paragraphs short (3-4 lines max)
+**Content Rules:**
+- NO em-dashes (`—`) - use en-dash (`–`) for ranges
+- NO corporate jargon ("dinâmico", "oportunidade incrível")
+- TOM: Conversational, direct, human
+- Salary as range: "R$ 10k – R$ 14k"
+- Keep paragraphs short (3-4 lines)
 - Use numbered lists for steps
 - Include `## Examples` section
 
 ---
 
-### CUE Fixtures Format
-
-Fixtures define test inputs for eval runner:
-
-```cue
-#HuntingTest: {
-    id:       int
-    prompt:   string
-    expected: {
-        techStack: string
-        level:     string
-        salary:    string
-        location:  string
-    }
-}
-
-testes: [
-    (#HuntingTest & {
-        id:     1
-        prompt: "Boolean para Dev Go Sr - R$15k-22k - remoto - Go, Kubernetes"
-        expected: {
-            techStack: "Go"
-            level:     "Senior"
-            salary:    "R$ 15k – R$ 22k"
-            location:  "Remoto"
-        }
-    }),
-]
-```
-
----
-
 ## Development Workflow
 
-1. **Edit prompts** in `projects/lovel/skills/claude/` or `projects/lovel/skills/chatgpt/`
-2. **Validate structure**: `python skills/skill-tester/scripts/quick_validate.py`
-3. **Test with LLM**: `python skills/skill-tester/scripts/test_skill.py --project lovel --skill hunting --verbose`
-4. **Iterate until 90%+ pass rate**
+1. **Edit prompts** in `projects/lovel/skills/claude/<skill>/`
+2. **Validate fixtures**: `cue vet -c .../testes.cue`
+3. **Test combined**: `python skills/skill-tester/scripts/test.py --project lovel`
+4. **Iterate** until 9.5+ in all dimensions
+5. **Commit** changes
 
 ---
 
-## Authorities & References
+## Test Criteria by Skill
 
-| Authority | Principle |
-|-----------|-----------|
-| Lou Adler | Performance-based Hiring |
-| Stacy Zapar | 3x3 Rule |
-| Glen Cathey | Boolean Black Belt |
-| Aaron Ross | Predictable Revenue |
-| Gergely Orosz | Pragmatic Engineer |
+### Hunting (Boolean Queries)
+- 5+ synonyms per tech term
+- X-Ray search (site:linkedin.com/in)
+- NOT exclusions for junior/intern
+- Location specificity
+- ZERO emojis
+
+### Outreach (DM Templates)
+- M1 max 200 characters
+- M2 with explicit salary range
+- Follow-up: Day 4 / Day 7
+- Invite parameter: `invite=caroline.lima798`
+- Max 1 emoji per message
+
+### Post (LinkedIn)
+- Hook with 90-day impact (not job title)
+- Explicit salary range
+- Max 4 jobs per post
+- No separators/em-dashes
+- Max 1 emoji per line
+
+### Parecer (Candidate Evaluation)
+- Structure: Resumo, Experiência, Stack, Pontos, Recomendação
+- ZERO emojis
+- PT-BR only (tech terms accepted)
+- Specific, not generic points
 
 ---
 
-## Project Metrics
+## Validation Dimensions (assess.py)
 
-| Skill | Claude | ChatGPT | Avg Score |
-|-------|--------|---------|-----------|
-| hunting | 10.0 | 10.0 | **10.0** |
-| outreach | 10.0 | 10.0 | **10.0** |
-| post | 10.0 | 10.0 | **10.0** |
-| parecer | 10.0 | 10.0 | **10.0** |
-
-**Overall: 10.0/10** | **Backend**: OpenCode (Claude 3.7 Sonnet)
+| Dimension | Description | Target |
+|-----------|-------------|--------|
+| Clareza | Instruções claras e objetivas | 9.5+ |
+| Exemplos | Bons e representativos | 9.5+ |
+| Tom | Humano, direto, não formal | 9.5+ |
+| Estrutura | Lógica e fácil de seguir | 9.5+ |
+| Completude | Todas informações necessárias | 9.5+ |
 
 ---
 
-**Last Updated**: 2026-03-19
+**Last Updated**: 2026-03-22
